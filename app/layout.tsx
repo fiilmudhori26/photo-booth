@@ -9,7 +9,7 @@ import "@fontsource/gaegu/700.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Kira Kira Photo Booth ✨",
+  title: "my dipaaa💕",
   description:
     "A cute and kawaii web photo booth — snap three poses, decorate your strip and download it in high resolution.",
 };

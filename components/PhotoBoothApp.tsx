@@ -298,7 +298,7 @@ export default function PhotoBoothApp() {
           </span>
           <div className="min-w-0">
             <h1 className="font-display text-xl leading-none text-ink sm:text-2xl">
-              Kira Kira Photo Booth
+              my dipaaa💕
             </h1>
             <p className="font-hand text-sm text-inksoft sm:text-base">
               snap 3 cute poses · decorate · download
