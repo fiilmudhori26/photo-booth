@@ -1,6 +1,16 @@
 export type FilterId = "normal" | "bw" | "vintage" | "pink" | "contrast";
 
-export type FrameId = "pink" | "cream" | "lavender" | "matcha" | "ink" | "white";
+export type FrameId =
+  | "pink"
+  | "cream"
+  | "lavender"
+  | "matcha"
+  | "ink"
+  | "white"
+  | "sky"
+  | "strawberry"
+  | "milktea"
+  | "coral";
 
 export type PatternId = "none" | "dots" | "hearts" | "stripes" | "checker";
 

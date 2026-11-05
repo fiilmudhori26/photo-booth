@@ -4,6 +4,7 @@ import {
   Camera,
   Check,
   Heart,
+  ImageUp,
   Sparkles,
   Volume2,
   VolumeX,
@@ -30,9 +31,10 @@ import type {
 } from "@/lib/types";
 import CameraStage from "./CameraStage";
 import StudioStage from "./StudioStage";
+import UploadStage from "./UploadStage";
 import { KawaiiButton, Panel, StatPill, cx } from "./ui";
 
-type Stage = "intro" | "camera" | "capturing" | "studio";
+type Stage = "intro" | "camera" | "capturing" | "upload" | "studio";
 
 const POSE_COUNT = 3;
 
@@ -45,7 +47,7 @@ const DECOR: { emoji: string; className: string; delay: string }[] = [
   { emoji: "🫧", className: "right-[30%] bottom-[8%]", delay: "0.3s" },
 ];
 
-const STEPS = ["Camera", "Snap poses", "Decorate"];
+const STEPS = ["Photos", "Snap poses", "Decorate"];
 
 function stepIndex(stage: Stage) {
   if (stage === "capturing") return 1;
@@ -179,6 +181,20 @@ export default function PhotoBoothApp() {
     setStage("studio");
   }, [camera, mirror, play]);
 
+  /** Same hand-off as a camera shoot, but the three shots came from the gallery. */
+  const useGalleryShots = (shots: string[]) => {
+    setStickers([]);
+    setSelectedId(null);
+    setCapturedCount(0);
+    setCountdown(null);
+    setNotice(null);
+    setSessionDate(new Date());
+    setRaws(shots);
+    setProcessed(shots);
+    play("success");
+    setStage("studio");
+  };
+
   const addSticker = (emoji: string) => {
     if (stickers.length >= MAX_STICKERS) return;
     const uid = uuid();
@@ -241,7 +257,7 @@ export default function PhotoBoothApp() {
       );
       downloadDataUrl(
         dataUrl,
-        `kira-kira-photo-booth-${fileStamp(sessionDate)}.${format}`,
+        `my-dipaaa-${fileStamp(sessionDate)}.${format}`,
       );
       play("success");
       setNotice("Saved to your device — kawaii! 💖");
@@ -370,9 +386,9 @@ export default function PhotoBoothApp() {
               Welcome to the cutest little photo booth
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-ink/80 sm:text-base">
-              Allow your camera, snap three poses with a countdown, then dress up
-              your strip with pastel filters, frames and stickers. Everything stays
-              on your device.
+              Allow your camera and snap three poses with a countdown — or upload
+              photos from your gallery instead. Then dress up your strip with pastel
+              filters, frames and stickers. Everything stays on your device.
             </p>
 
             <div className="mt-7 grid gap-3 sm:grid-cols-3">
@@ -404,6 +420,18 @@ export default function PhotoBoothApp() {
               >
                 Start Photo Booth
               </KawaiiButton>
+              <KawaiiButton
+                icon={<ImageUp className="size-5" />}
+                onClick={() => {
+                  play("sparkle");
+                  setStage("upload");
+                }}
+              >
+                Upload from Gallery
+              </KawaiiButton>
+            </div>
+
+            <div className="mt-4 flex justify-center">
               <StatPill icon={<Heart className="size-3.5" />}>
                 Nothing is uploaded anywhere
               </StatPill>
@@ -474,9 +502,18 @@ export default function PhotoBoothApp() {
                 </KawaiiButton>
 
                 {stage === "camera" && (
-                  <KawaiiButton block onClick={() => setStage("intro")}>
-                    Back
-                  </KawaiiButton>
+                  <>
+                    <KawaiiButton
+                      block
+                      onClick={() => setStage("upload")}
+                      icon={<ImageUp className="size-5" />}
+                    >
+                      Upload from gallery
+                    </KawaiiButton>
+                    <KawaiiButton block onClick={() => setStage("intro")}>
+                      Back
+                    </KawaiiButton>
+                  </>
                 )}
               </div>
 
@@ -486,6 +523,13 @@ export default function PhotoBoothApp() {
               </p>
             </Panel>
           </div>
+        )}
+
+        {stage === "upload" && (
+          <UploadStage
+            onBack={() => setStage("intro")}
+            onComplete={useGalleryShots}
+          />
         )}
 
         {stage === "studio" && (
