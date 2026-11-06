@@ -142,3 +142,162 @@ export function StatPill({
     </span>
   );
 }
+
+// ── Dark Theme Mobile Components ─────────────────────────────────────
+
+export function Stepper({
+  step,
+  onChange,
+}: {
+  step: "select" | "capture" | "edit" | "export";
+  onChange: (step: "select" | "capture" | "edit" | "export") => void;
+}) {
+  const steps = [
+    { id: "select" as const, label: "Template" },
+    { id: "capture" as const, label: "Capture" },
+    { id: "edit" as const, label: "Edit" },
+    { id: "export" as const, label: "Export" },
+  ];
+
+  return (
+    <nav className="fixed bottom-16 left-0 right-0 mx-auto w-full max-w-md justify-center gap-1 border-b border-slate-700/50 bg-slate-900/80 backdrop-blur-sm px-4 py-3">
+      <div className="flex items-center justify-around">
+        {steps.map(({ id, label }) => {
+          const isActive = id === step;
+          const isCompleted =
+            (id === "select" && step !== "select") ||
+            (id === "capture" && step === "capture") ||
+            (id === "edit" && (step === "edit" || step === "capture")) ||
+            (id === "export" && step !== "select");
+
+          return (
+            <button
+              key={id}
+              onClick={() => onChange(id)}
+              className={cx(
+                "flex flex-col items-center gap-1 rounded-full px-3 py-2 text-xs font-medium transition",
+                isActive
+                  ? "text-indigo-400"
+                  : isCompleted
+                    ? "text-slate-300"
+                    : "text-slate-500",
+              )}
+            >
+              {label}
+              {isActive && (
+                <div className="mt-0.5 h-1 w-6 rounded-full bg-indigo-500" />
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+
+export function MobilePanel({
+  title,
+  hint,
+  children,
+  className,
+}: {
+  title?: string;
+  hint?: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section
+      className={cx(
+        "rounded-2xl border-[3px] border-slate-700/50 bg-slate-900/60 p-5",
+        className,
+      )}
+    >
+      {title && (
+        <header className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="font-display text-lg leading-none text-white">
+              {title}
+            </h2>
+            {hint && (
+              <span className="font-hand text-sm text-slate-400">{hint}</span>
+            )}
+          </div>
+        </header>
+      )}
+      {children}
+    </section>
+  );
+}
+
+export function MobileButton({
+  variant = "primary",
+  icon,
+  block,
+  size = "md",
+  className,
+  children,
+  ...rest
+}: {
+  variant?: "primary" | "secondary";
+  icon?: ReactNode;
+  block?: boolean;
+  size?: "sm" | "md" | "lg";
+  className?: string;
+  children: ReactNode;
+} & ButtonHTMLAttributes<HTMLButtonElement>) {
+  const variants = {
+    primary:
+      "border-transparent bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500",
+    secondary:
+      "border-slate-700/50 bg-slate-800/60 text-slate-200 hover:bg-slate-700/60",
+  };
+
+  return (
+    <button
+      className={cx(
+        "inline-flex items-center justify-center gap-2 rounded-2xl border-[3px] font-bold transition active:translate-y-[1px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-50",
+        size === "sm"
+          ? "min-h-10 px-3 text-sm"
+          : size === "lg"
+            ? "min-h-12 px-5 text-base"
+            : "min-h-11 px-4 text-sm",
+        block && "w-full",
+        variants[variant],
+        className,
+      )}
+      {...rest}
+    >
+      {icon}
+      {children}
+    </button>
+  );
+}
+
+export function BottomSheet({
+  open,
+  onClose,
+  children,
+}: {
+  open: boolean;
+  onClose: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className={cx(
+        "fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300",
+        open ? "translate-y-0" : "translate-y-full",
+      )}
+      style={{
+        background: "rgba(15, 23, 42, 0.95)",
+        backdropFilter: "blur(20px)",
+      }}
+    >
+      <div className="mb-2 flex justify-center">
+        <div className="h-1 w-12 rounded-full bg-slate-400/50" />
+      </div>
+      <div className="max-h-96 overflow-y-auto p-4">{children}</div>
+    </div>
+  );
+}

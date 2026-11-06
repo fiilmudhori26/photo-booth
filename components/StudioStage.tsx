@@ -21,20 +21,22 @@ import { useState } from "react";
 import { FILTER_PRESETS } from "@/lib/filters";
 import { FRAMES, PATTERNS } from "@/lib/frames";
 import { STICKER_PRESETS } from "@/lib/stickers";
+import { TEMPLATE_LIST } from "@/lib/templates";
 import { MAX_STICKERS, PAD_MAX, PAD_MIN, PAD_STEP } from "@/lib/strip";
-import type { ExportFormat, FilterId, FrameId, PatternId, StickerItem } from "@/lib/types";
+import type { ExportFormat, FilterId, FrameId, PatternId, StickerItem, TemplateId } from "@/lib/types";
 import StripCanvas from "./StripCanvas";
 import { Chip, KawaiiButton, Panel, cx } from "./ui";
 
-type Tab = "filters" | "frame" | "stickers";
+type Tab = "filters" | "frame" | "stickers" | "templates";
 
 const TABS: { id: Tab; label: string; icon: typeof Sparkles }[] = [
   { id: "filters", label: "Filters", icon: WandSparkles },
   { id: "frame", label: "Frame", icon: Palette },
   { id: "stickers", label: "Stickers", icon: StickerIcon },
+  { id: "templates", label: "Templates", icon: Sparkles },
 ];
 
-interface StudioStageProps {
+export interface StudioStageProps {
   photos: string[];
   filterId: FilterId;
   onFilter: (id: FilterId) => void;
@@ -60,6 +62,9 @@ interface StudioStageProps {
   caption: string;
   onCaption: (value: string) => void;
   dateText: string;
+
+  templateId: TemplateId;
+  onTemplate: (id: TemplateId) => void;
 
   format: ExportFormat;
   onFormat: (format: ExportFormat) => void;
@@ -100,17 +105,21 @@ export default function StudioStage(props: StudioStageProps) {
     exporting,
     onRetake,
     onStartOver,
+    templateId,
+    onTemplate,
   } = props;
 
   const [tab, setTab] = useState<Tab>("filters");
   const selected = stickers.find((sticker) => sticker.uid === selectedId) ?? null;
   const full = stickers.length >= MAX_STICKERS;
 
+  const currentTemplate = TEMPLATE_LIST.find((t) => t.id === templateId) ?? TEMPLATE_LIST[0];
+
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-start">
       {/* ── Preview ─────────────────────────────────────────── */}
       <Panel
-        title="Your Photo Strip"
+        title={`Your Photo Strip (${currentTemplate.name})`}
         icon="📸"
         hint="drag stickers to move them"
         className="lg:sticky lg:top-6"
@@ -458,6 +467,42 @@ export default function StudioStage(props: StudioStageProps) {
                 Clear all stickers
               </KawaiiButton>
             )}
+          </div>
+        )}
+
+        {tab === "templates" && (
+          <div className="space-y-4">
+            <h3 className="font-display text-base text-ink">Photo Templates</h3>
+            <p className="font-hand text-sm text-inksoft">
+              Pilih layout untuk foto. Layout berbeda memengaruhi jumlah foto dan tata letak.
+            </p>
+            <div className="grid grid-cols-1 gap-3">
+              {TEMPLATE_LIST.map((template) => (
+                <button
+                  key={template.id}
+                  type="button"
+                  onClick={() => onTemplate(template.id as TemplateId)}
+                  className={cx(
+                    "flex items-center gap-3 rounded-2xl border-[3px] p-3 text-left transition",
+                    templateId === template.id
+                      ? "border-rose bg-white shadow-[0_8px_16px_-12px_rgba(244,114,182,1)]"
+                      : "border-white bg-white/70 hover:bg-white",
+                  )}
+                >
+                  <div
+                    className="size-10 rounded-full border-2 border-white bg-white/80 flex items-center justify-center"
+                  >
+                    📸
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-bold text-ink">{template.name}</div>
+                    <div className="text-xs text-inksoft">
+                      {template.photoSlots.length} photos
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         )}
 

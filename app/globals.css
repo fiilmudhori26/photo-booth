@@ -5,6 +5,7 @@
   --font-body: "M PLUS Rounded 1c", ui-rounded, system-ui, sans-serif;
   --font-hand: "Gaegu", "M PLUS Rounded 1c", ui-rounded, cursive;
 
+  /* Light theme colors (original kawaii style) */
   --color-cream: #fff9f5;
   --color-vanilla: #fffdf8;
   --color-blush: #fee2e2;
@@ -22,6 +23,22 @@
   --color-sky: #dbeafe;
   --color-ink: #6b4a5a;
   --color-inksoft: #a3809a;
+
+  /* Dark theme colors (mobile-first professional) */
+  --color-slate-900: #0f172a;
+  --color-slate-800: #1e293b;
+  --color-slate-700: #334155;
+  --color-slate-600: #475569;
+  --color-slate-500: #64748b;
+  --color-slate-400: #94a3b8;
+  --color-slate-300: #cbd5e1;
+  --color-slate-200: #e2e8f0;
+  --color-slate-100: #f1f5f9;
+  --color-indigo-500: #6366f1;
+  --color-indigo-600: #4f46e5;
+  --color-purple-500: #a855f7;
+  --color-purple-600: #9333ea;
+  --color-rose-500: #f43f5e;
 }
 
 @layer base {

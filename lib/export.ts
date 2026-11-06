@@ -1,9 +1,47 @@
 import { loadImage } from "./filters";
 import { STRIP_W, drawStrip, stripHeight, type StripRenderOptions } from "./strip";
-import type { ExportFormat } from "./types";
+import { TEMPLATE_W, TEMPLATE_H, type PhotoBoothTemplate, type TemplateRenderOptions, getTemplate } from "./templates";
+import type { ExportFormat, TemplateId } from "./types";
 
 /** Resolution multiplier used for the downloaded file (preview is 1x). */
 export const EXPORT_SCALE = 2;
+
+/** Export using a template (returns 1200px wide for print quality). */
+export async function renderTemplateToDataUrl(
+  templateId: TemplateId,
+  options: { photos: string[]; caption: string; dateText: string } & Record<string, unknown>,
+  format: ExportFormat,
+): Promise<string> {
+  if (typeof document !== "undefined" && "fonts" in document) {
+    await document.fonts.ready;
+  }
+
+  const images = await Promise.all(
+    options.photos.map((src: string) => loadImage(src).catch(() => null)),
+  );
+
+  const template: PhotoBoothTemplate = getTemplate(templateId);
+  const height = TEMPLATE_H;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = TEMPLATE_W;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas is not available in this browser.");
+
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+
+  template.render(ctx, {
+    photos: images,
+    caption: options.caption as string,
+    dateText: options.dateText as string,
+    ...(options as Omit<TemplateRenderOptions, 'photos' | 'caption' | 'dateText'>),
+  } as TemplateRenderOptions, 1);
+
+  return canvas.toDataURL(format === "png" ? "image/png" : "image/jpeg", 0.95);
+}
 
 export function formatStamp(date: Date): string {
   return date
