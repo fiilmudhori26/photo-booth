@@ -23,11 +23,10 @@ export default function MobileStepper({ step, onChange }: StepperProps) {
       <div className="flex items-center justify-around">
         {STEPS.map(({ id, label, icon: Icon }) => {
           const isActive = id === step;
-          const isCompleted =
-            (id === "select" && step !== "select") ||
-            (id === "capture" && step === "capture") ||
-            (id === "edit" && (step === "edit" || step === "capture")) ||
-            (id === "export" && step !== "select");
+          const stepOrder = { select: 0, capture: 1, edit: 2, export: 3 };
+          const currentStepIndex = stepOrder[step];
+          const stepIndex = stepOrder[id];
+          const isCompleted = stepIndex < currentStepIndex;
 
           return (
             <button

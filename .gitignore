@@ -26,3 +26,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# cloned skills repo (separate project, not part of photo booth)
+mattpocock-skills/
