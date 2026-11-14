@@ -130,18 +130,20 @@ export default function StudioStage(props: StudioStageProps) {
             💖
           </span>
 
-          <StripCanvas
-            photos={photos}
-            frameId={frameId}
-            pattern={pattern}
-            pad={pad}
-            stickers={stickers}
-            caption={caption}
-            dateText={dateText}
-            selectedId={selectedId}
-            onSelect={onSelect}
-            onMove={onMove}
-          />
+          <div key={photos.length} className="anim-strip-in">
+            <StripCanvas
+              photos={photos}
+              frameId={frameId}
+              pattern={pattern}
+              pad={pad}
+              stickers={stickers}
+              caption={caption}
+              dateText={dateText}
+              selectedId={selectedId}
+              onSelect={onSelect}
+              onMove={onMove}
+            />
+          </div>
 
           {processing && (
             <div className="absolute inset-0 flex items-center justify-center rounded-[1.5rem] bg-white/70 backdrop-blur-sm">

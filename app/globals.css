@@ -241,6 +241,21 @@
   animation: sweep 2.4s ease-in-out infinite;
 }
 
+@keyframes stripIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.92) rotate(-1.5deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.anim-strip-in {
+  animation: stripIn 0.45s ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .anim-float,
   .anim-wiggle,
@@ -248,7 +263,8 @@
   .anim-count,
   .anim-flash,
   .anim-bob,
-  .anim-sweep {
+  .anim-sweep,
+  .anim-strip-in {
     animation: none;
   }
 }
