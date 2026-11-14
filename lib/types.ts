@@ -10,14 +10,7 @@ export type FrameId =
   | "sky"
   | "strawberry"
   | "milktea"
-  | "coral"
-  | "boarding-pass"
-  | "vintage-movie"
-  | "modern-graphic"
-  | "air-mail"
-  | "theater-ticket";
-
-export type TemplateId = "boarding-pass" | "vintage-movie" | "modern-graphic" | "air-mail" | "theater-ticket";
+  | "coral";
 
 export type PatternId = "none" | "dots" | "hearts" | "stripes" | "checker";
 

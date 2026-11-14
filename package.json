@@ -5,11 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "typecheck": "tsc --noEmit"
+    "start": "next start"
   },
   "dependencies": {
     "@fontsource/cherry-bomb-one": "^5.3.0",
@@ -21,21 +17,11 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@babel/preset-react": "^8.0.1",
-    "@babel/preset-typescript": "^8.0.7",
     "@tailwindcss/postcss": "^4.3.4",
-    "@testing-library/dom": "^10.4.2",
-    "@testing-library/jest-dom": "^7.0.1",
-    "@testing-library/react": "^16.3.3",
-    "@types/jest": "^30.0.0",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "jest": "^30.5.2",
-    "jest-canvas-mock": "^2.5.8",
-    "jest-environment-jsdom": "^30.5.2",
     "tailwindcss": "^4.3.4",
-    "ts-jest": "^29.4.15",
     "typescript": "^5.9.3"
   }
 }
