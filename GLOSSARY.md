@@ -15,7 +15,7 @@ The component that manages navigation between steps and state that is genuinely 
 The module that handles the camera, countdown, flash, and photo-capture sequence. Owns `useCamera` locally.
 
 ## EditStep
-The module that handles filters, stickers, caption, date, format, and download. Renders the editing bottom sheet as a thin UI layer.
+The module that handles filters, stickers, caption, date, format, and download. Renders the inline "Studio tools" panel (`EditorBottomSheet`) as a thin UI layer.
 
 ## ExportStep
 The module that handles download options (PNG/JPG), QR placeholder, and "Start New Session".
@@ -36,7 +36,7 @@ Renders a photo strip to a data URL (`renderStripToDataUrl`). Lives in `lib/stri
 Barrel re-export for backward compatibility — re-exports everything from the four focused modules above.
 
 ## SelectStep
-The module that handles template selection and the "Continue to Camera" action.
+The module that handles template selection (badge copy: "{n}-slot strip") and the "Continue to Camera" action.
 
 ## EditController (EditStep)
 The module that owns all editing state (filter, caption, stickers, format, template) and orchestrates editing sub-components. It is the local state owner for the `edit` step, keeping `PhotoBoothApp` free of editing details.
@@ -56,8 +56,11 @@ Sub-component that toggles export format between PNG and JPG. Receives only `for
 ## RetakePanel
 Sub-component that renders the "Retake All Photos" button. Receives only `photos`, `onRetake`, and `processing`.
 
-## EditorBottomSheet (shell)
-A thin bottom-sheet wrapper that provides open/close animation and backdrop. It receives `children` and no longer acts as a prop-drilling pass-through.
+## Stepper
+Fixed bottom navigation for the four steps, rendered by `components/ui.tsx`. Accepts a `disabled` prop that disables every step button and sets `aria-disabled="true"` (used to lock navigation while a capture sequence is running). The previous duplicate `MobileStepper` was removed; `Stepper` is the single implementation.
+
+## EditorBottomSheet (tools panel)
+An inline (non-fixed) container that renders the edit tools ("Studio tools") directly in the page flow, underneath the photo preview. It is not a modal bottom sheet and provides no open/close animation or backdrop; it receives `children`, a required `open` prop (panel does not render when `false`), and an optional `title`.
 
 ## Seam
 The narrow interface between two steps: props and callbacks passed through the orchestrator. Steps do not talk to each other directly.

@@ -12,32 +12,34 @@ export default function FormatToggle({
   format,
   onFormat,
 }: FormatToggleProps) {
+  const options: ExportFormat[] = ["png", "jpg"];
+
   return (
-    <div className="flex gap-2">
-      <button
-        type="button"
-        onClick={() => onFormat("png")}
-        className={cx(
-          "rounded-full border-2 px-3 py-1 text-xs font-bold transition",
-          format === "png"
-            ? "border-indigo-500 bg-indigo-600/20 text-white"
-            : "border-slate-700/50 bg-slate-800/40 text-slate-300",
-        )}
-      >
-        PNG
-      </button>
-      <button
-        type="button"
-        onClick={() => onFormat("jpg")}
-        className={cx(
-          "rounded-full border-2 px-3 py-1 text-xs font-bold transition",
-          format === "jpg"
-            ? "border-indigo-500 bg-indigo-600/20 text-white"
-            : "border-slate-700/50 bg-slate-800/40 text-slate-300",
-        )}
-      >
-        JPG
-      </button>
-    </div>
+    <fieldset>
+      <legend className="mb-2 font-display text-base text-white">
+        File format
+      </legend>
+      <div className="flex gap-2" role="group" aria-label="File format">
+        {options.map((option) => {
+          const active = format === option;
+          return (
+            <button
+              key={option}
+              type="button"
+              onClick={() => onFormat(option)}
+              aria-pressed={active}
+              className={cx(
+                "min-h-11 rounded-full border px-5 py-2 text-xs font-bold uppercase tracking-wide transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
+                active
+                  ? "border-indigo-500 bg-indigo-600 text-white shadow"
+                  : "border-slate-700 bg-slate-800/60 text-slate-300 hover:border-slate-600 hover:text-white",
+              )}
+            >
+              {option}
+            </button>
+          );
+        })}
+      </div>
+    </fieldset>
   );
 }
