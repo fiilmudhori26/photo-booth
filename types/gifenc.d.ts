@@ -23,7 +23,7 @@ declare module "gifenc" {
   export function quantize(
     rgba: Uint8ClampedArray | Uint8Array,
     maxColors: number,
-    opts?: { format?: "rgb565" | "rgba4444" | "rgba4444" | "rgb" | "rgba" },
+    opts?: { format?: "rgb565" | "rgba4444" | "rgb" | "rgba" },
   ): number[][];
 
   export function applyPalette(

@@ -53,7 +53,7 @@ export async function renderStripGif(opts: StripGifOptions): Promise<string> {
 
   const encoder = GIFEncoder();
   const forward = [...Array(framesPerPose).keys()];
-  const backward = [...Array(Math.max(framesPerPose - 1, 0)).keys()].reverse().slice(1);
+  const backward = [...Array(Math.max(framesPerPose - 1, 0)).keys()].reverse();
   const timeline = [...forward, ...backward];
 
   for (const index of timeline) {

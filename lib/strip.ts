@@ -208,7 +208,7 @@ export interface StripRenderOptions {
   selectedStickerId?: string | null;
   caption: string;
   dateText: string;
-  /** Optional free-text event line rendered instead of nothing (below caption). */
+  /** Optional free-text event line rendered below caption and date (footer). */
   eventText?: string;
 }
 
@@ -273,14 +273,13 @@ export function drawStrip(
   ctx.textBaseline = "middle";
   if (eventLine) {
     ctx.fillStyle = frame.ink;
-    ctx.font = `400 ${24}px ${DISPLAY_FONT}`;
-    ctx.fillText(opts.caption || "★ PHOTO BOOTH ★", STRIP_W / 2, footerY - 24);
+    ctx.font = `400 ${26}px ${DISPLAY_FONT}`;
+    ctx.fillText(opts.caption || "★ PHOTO BOOTH ★", STRIP_W / 2, footerY - 26);
     ctx.fillStyle = frame.ink;
-    ctx.font = `700 ${17}px ${HAND_FONT}`;
-    ctx.fillText(eventLine, STRIP_W / 2, footerY + 1);
-    ctx.fillStyle = frame.inkSoft;
-    ctx.font = `700 ${17}px ${HAND_FONT}`;
-    ctx.fillText(opts.dateText, STRIP_W / 2, footerY + 23);
+    ctx.font = `700 ${19}px ${HAND_FONT}`;
+    ctx.fillText(opts.dateText, STRIP_W / 2, footerY + 1);
+    ctx.font = `700 ${16}px ${HAND_FONT}`;
+    ctx.fillText(eventLine, STRIP_W / 2, footerY + 24);
   } else {
     ctx.fillStyle = frame.ink;
     ctx.font = `400 ${32}px ${DISPLAY_FONT}`;

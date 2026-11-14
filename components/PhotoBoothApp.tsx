@@ -315,12 +315,12 @@ export default function PhotoBoothApp() {
           dateText,
           eventText,
         },
-        "png",
+        format,
       );
       const result = await shareImage(dataUrl, {
         title: "my dipaaa",
         text: "My photo strip 💖",
-        format: "png",
+        format,
       });
       setNotice(
         result === "shared"
@@ -343,8 +343,13 @@ export default function PhotoBoothApp() {
     setGifBusy(true);
     setNotice(null);
     try {
+      const bakedGrabs = await Promise.all(
+        gifGrabsRef.current.map((pose) =>
+          Promise.all(pose.map((grab) => renderFilteredShot(grab, filterId))),
+        ),
+      );
       const dataUrl = await renderStripGif({
-        grabs: gifGrabsRef.current,
+        grabs: bakedGrabs,
         frameId,
         pattern,
         pad,
@@ -497,7 +502,7 @@ export default function PhotoBoothApp() {
             <div className="mt-7 grid gap-3 sm:grid-cols-3">
               {[
                 { icon: <Camera className="size-5" />, title: "3 poses", text: "Countdown, flash and cute pose prompts." },
-                { icon: <WandSparkles className="size-5" />, title: "5 filters", text: "Pastel bloom, vintage warm, mono and more." },
+                { icon: <WandSparkles className="size-5" />, title: "8 filters", text: "Pastel bloom, vintage warm, mono and more." },
                 { icon: <Sparkles className="size-5" />, title: "Stickers", text: "Frames, patterns, hearts and date stamps." },
               ].map((item) => (
                 <div key={item.title} className="kawaii-inset px-4 py-5">

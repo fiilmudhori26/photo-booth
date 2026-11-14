@@ -14,7 +14,7 @@ export const FILTER_PRESETS: FilterPreset[] = [
   { id: "pink", label: "Pastel Bloom", icon: "🧁", hint: "Dreamy pink glow" },
   { id: "contrast", label: "Punchy Pop", icon: "🍬", hint: "High contrast" },
   { id: "sepia", label: "Sepia Nostalgia", icon: "📜", hint: "Old-time warm paper" },
-  { id: "grain", label: "Film Grain", icon: "🎞️", hint: "35mm texture" },
+  { id: "grain", label: "Film Grain", icon: "📼", hint: "35mm texture" },
   { id: "lightleak", label: "Light Leak", icon: "🌅", hint: "Soft sunburn glow" },
 ];
 

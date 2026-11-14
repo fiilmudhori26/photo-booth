@@ -229,7 +229,7 @@ export default function StudioStage(props: StudioStageProps) {
               )
             }
           >
-            {gifBusy ? "Making GIF…" : "Download as GIF"}
+            {gifBusy ? "Making GIF…" : "Save / Share as GIF"}
           </KawaiiButton>
           {!gifAvailable && (
             <p className="text-center font-hand text-sm text-inksoft">
