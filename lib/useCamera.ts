@@ -110,6 +110,36 @@ export function useCamera(enabled: boolean) {
     setPreferredDeviceId(deviceId);
   }, []);
 
+  /** Grabs the current frame as a small JPEG (used for the animated GIF). */
+  const captureSmallFrame = useCallback(
+    (mirror: boolean): string | null => {
+      const video = videoRef.current;
+      if (!video || !video.videoWidth || !video.videoHeight) return null;
+      const w = 360;
+      const h = 270;
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return null;
+
+      const scale = Math.max(w / video.videoWidth, h / video.videoHeight);
+      const dw = video.videoWidth * scale;
+      const dh = video.videoHeight * scale;
+
+      ctx.save();
+      if (mirror) {
+        ctx.translate(w, 0);
+        ctx.scale(-1, 1);
+      }
+      ctx.drawImage(video, (w - dw) / 2, (h - dh) / 2, dw, dh);
+      ctx.restore();
+
+      return canvas.toDataURL("image/jpeg", 0.7);
+    },
+    [],
+  );
+
   /** Grabs the current frame as a JPEG data URL, cropped to the strip ratio. */
   const captureFrame = useCallback((mirror: boolean): string | null => {
     const video = videoRef.current;
@@ -149,5 +179,6 @@ export function useCamera(enabled: boolean) {
     switchCamera,
     selectCamera,
     captureFrame,
+    captureSmallFrame,
   };
 }

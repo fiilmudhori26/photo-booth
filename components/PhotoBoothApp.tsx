@@ -14,6 +14,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { renderFilteredShot } from "@/lib/filters";
 import { DEFAULT_FRAME } from "@/lib/frames";
 import { shareImage } from "@/lib/share";
+import { renderStripGif } from "@/lib/gif";
 import {
   downloadDataUrl,
   fileStamp,
@@ -76,6 +77,8 @@ export default function PhotoBoothApp() {
   const [format, setFormat] = useState<ExportFormat>("png");
   const [exporting, setExporting] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [gifBusy, setGifBusy] = useState(false);
+  const [isCameraSession, setIsCameraSession] = useState(false);
 
   const [sessionDate, setSessionDate] = useState(() => new Date());
   const [mirror, setMirror] = useState(true);
@@ -136,7 +139,11 @@ export default function PhotoBoothApp() {
   const uuid = () =>
     `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 
+  const gifGrabsRef = useRef<string[][]>([]);
+
   const runSequence = useCallback(async () => {
+    setIsCameraSession(true);
+    gifGrabsRef.current = [];
     if (camera.status !== "ready") return;
 
     setStage("capturing");
@@ -161,13 +168,29 @@ export default function PhotoBoothApp() {
       }
 
       if (!aliveRef.current) return;
+      const grabs: string[] = [];
+      const pre1 = camera.captureSmallFrame(mirror);
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      const pre2 = camera.captureSmallFrame(mirror);
+      if (pre1) grabs.push(pre1);
+      if (pre2) grabs.push(pre2);
+
       setCountdown(null);
       setFlash(true);
       play("shutter");
       if (soundRef.current) vibrate([40, 60, 40]);
 
       const frame = camera.captureFrame(mirror);
-      await new Promise((resolve) => setTimeout(resolve, 130));
+      const mid = camera.captureSmallFrame(mirror);
+      if (mid) grabs.push(mid);
+      await new Promise((resolve) => setTimeout(resolve, 160));
+      const post1 = camera.captureSmallFrame(mirror);
+      if (post1) grabs.push(post1);
+      await new Promise((resolve) => setTimeout(resolve, 160));
+      const post2 = camera.captureSmallFrame(mirror);
+      if (post2) grabs.push(post2);
+      gifGrabsRef.current[index] = grabs;
+
       if (!aliveRef.current) return;
       setFlash(false);
 
@@ -188,6 +211,8 @@ export default function PhotoBoothApp() {
 
   /** Same hand-off as a camera shoot, but the three shots came from the gallery. */
   const useGalleryShots = (shots: string[]) => {
+    setIsCameraSession(false);
+    gifGrabsRef.current = [];
     setStickers([]);
     setSelectedId(null);
     setCapturedCount(0);
@@ -306,6 +331,42 @@ export default function PhotoBoothApp() {
       setNotice("Hmm, the strip could not be shared. Please try again.");
     } finally {
       setSharing(false);
+    }
+  };
+
+  const handleGif = async () => {
+    if (!processed.length || gifBusy || exporting) return;
+    if (!isCameraSession || !gifGrabsRef.current.some((grabs) => grabs.length)) {
+      setNotice("GIF works after a camera shoot — this strip came from the gallery.");
+      return;
+    }
+    setGifBusy(true);
+    setNotice(null);
+    try {
+      const dataUrl = await renderStripGif({
+        grabs: gifGrabsRef.current,
+        frameId,
+        pattern,
+        pad,
+        stickers,
+        caption,
+        dateText,
+        eventText,
+      });
+      const result = await shareImage(dataUrl, {
+        title: "my dipaaa",
+        text: "My animated photo strip 💖",
+        format: "gif",
+      });
+      setNotice(
+        result === "shared"
+          ? "GIF shared — kawaii! 💌"
+          : "GIF saved to your device — kawaii! 💖",
+      );
+    } catch {
+      setNotice("Hmm, the GIF could not be created. Try the plain strip instead.");
+    } finally {
+      setGifBusy(false);
     }
   };
 
@@ -612,6 +673,9 @@ export default function PhotoBoothApp() {
             exporting={exporting}
             onShare={() => void handleShare()}
             sharing={sharing}
+            onGif={() => void handleGif()}
+            gifBusy={gifBusy}
+            gifAvailable={isCameraSession}
             onRetake={retakePhotos}
             onStartOver={startOver}
           />

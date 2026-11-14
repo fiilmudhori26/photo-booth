@@ -3,6 +3,7 @@
 import {
   Calendar,
   Download,
+  Film,
   Eraser,
   Image as ImageIcon,
   LoaderCircle,
@@ -70,6 +71,9 @@ interface StudioStageProps {
   exporting: boolean;
   onShare: () => void;
   sharing: boolean;
+  onGif: () => void;
+  gifBusy: boolean;
+  gifAvailable: boolean;
 
   onRetake: () => void;
   onStartOver: () => void;
@@ -107,6 +111,9 @@ export default function StudioStage(props: StudioStageProps) {
     exporting,
     onShare,
     sharing,
+    onGif,
+    gifBusy,
+    gifAvailable,
     onRetake,
     onStartOver,
   } = props;
@@ -207,6 +214,28 @@ export default function StudioStage(props: StudioStageProps) {
           >
             Retake Photos
           </KawaiiButton>
+        </div>
+
+        <div className="mt-3 grid gap-2">
+          <KawaiiButton
+            block
+            disabled={exporting || sharing || gifBusy || !photos.length || !gifAvailable}
+            onClick={onGif}
+            icon={
+              gifBusy ? (
+                <LoaderCircle className="size-5 animate-spin" />
+              ) : (
+                <Film className="size-5" />
+              )
+            }
+          >
+            {gifBusy ? "Making GIF…" : "Download as GIF"}
+          </KawaiiButton>
+          {!gifAvailable && (
+            <p className="text-center font-hand text-sm text-inksoft">
+              GIF works after a camera shoot — this strip came from the gallery.
+            </p>
+          )}
         </div>
 
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-inksoft">

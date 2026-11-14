@@ -20,13 +20,14 @@ export function dataUrlToBlob(dataUrl: string): Blob {
  */
 export async function shareImage(
   dataUrl: string,
-  options: { title: string; text?: string; format?: ExportFormat } = {
+  options: { title: string; text?: string; format?: ExportFormat | "gif" } = {
     title: "my dipaaa",
   },
 ): Promise<"shared" | "downloaded"> {
   const format = options.format ?? "png";
-  const ext = format === "jpg" ? "jpg" : "png";
-  const mime = format === "jpg" ? "image/jpeg" : "image/png";
+  const ext = format === "jpg" ? "jpg" : format;
+  const mime =
+    format === "gif" ? "image/gif" : format === "jpg" ? "image/jpeg" : "image/png";
   const filename = `my-dipaaa-${fileStamp(new Date())}.${ext}`;
   const blob = dataUrlToBlob(dataUrl);
   const file = new File([blob], filename, { type: mime });
