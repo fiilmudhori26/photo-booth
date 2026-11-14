@@ -208,6 +208,8 @@ export interface StripRenderOptions {
   selectedStickerId?: string | null;
   caption: string;
   dateText: string;
+  /** Optional free-text event line rendered instead of nothing (below caption). */
+  eventText?: string;
 }
 
 /**
@@ -265,15 +267,28 @@ export function drawStrip(
   });
 
   const footerY = height - FOOTER_H / 2 + 6;
+  const eventLine = opts.eventText?.trim() ?? "";
   ctx.save();
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillStyle = frame.ink;
-  ctx.font = `400 ${32}px ${DISPLAY_FONT}`;
-  ctx.fillText(opts.caption || "★ PHOTO BOOTH ★", STRIP_W / 2, footerY - 15);
-  ctx.fillStyle = frame.inkSoft;
-  ctx.font = `700 ${23}px ${HAND_FONT}`;
-  ctx.fillText(opts.dateText, STRIP_W / 2, footerY + 22);
+  if (eventLine) {
+    ctx.fillStyle = frame.ink;
+    ctx.font = `400 ${24}px ${DISPLAY_FONT}`;
+    ctx.fillText(opts.caption || "★ PHOTO BOOTH ★", STRIP_W / 2, footerY - 24);
+    ctx.fillStyle = frame.ink;
+    ctx.font = `700 ${17}px ${HAND_FONT}`;
+    ctx.fillText(eventLine, STRIP_W / 2, footerY + 1);
+    ctx.fillStyle = frame.inkSoft;
+    ctx.font = `700 ${17}px ${HAND_FONT}`;
+    ctx.fillText(opts.dateText, STRIP_W / 2, footerY + 23);
+  } else {
+    ctx.fillStyle = frame.ink;
+    ctx.font = `400 ${32}px ${DISPLAY_FONT}`;
+    ctx.fillText(opts.caption || "★ PHOTO BOOTH ★", STRIP_W / 2, footerY - 15);
+    ctx.fillStyle = frame.inkSoft;
+    ctx.font = `700 ${23}px ${HAND_FONT}`;
+    ctx.fillText(opts.dateText, STRIP_W / 2, footerY + 22);
+  }
   ctx.restore();
 
   for (const sticker of opts.stickers) {

@@ -67,6 +67,7 @@ export default function PhotoBoothApp() {
   const [pattern, setPattern] = useState<PatternId>("dots");
   const [pad, setPad] = useState(PAD_DEFAULT);
   const [caption, setCaption] = useState("★ PHOTO BOOTH ★");
+  const [eventText, setEventText] = useState("");
 
   const [stickers, setStickers] = useState<StickerItem[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -254,6 +255,7 @@ export default function PhotoBoothApp() {
           stickers,
           caption,
           dateText,
+          eventText,
         },
         format,
       );
@@ -288,6 +290,7 @@ export default function PhotoBoothApp() {
     setPattern("dots");
     setPad(PAD_DEFAULT);
     setCaption("★ PHOTO BOOTH ★");
+    setEventText("");
   };
 
   const capturing = stage === "capturing";
@@ -564,6 +567,8 @@ export default function PhotoBoothApp() {
             caption={caption}
             onCaption={setCaption}
             dateText={dateText}
+            eventText={eventText}
+            onEventText={setEventText}
             format={format}
             onFormat={setFormat}
             onDownload={() => void handleDownload()}

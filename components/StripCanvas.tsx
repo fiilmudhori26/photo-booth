@@ -16,6 +16,7 @@ interface StripCanvasProps {
   stickers: StickerItem[];
   caption: string;
   dateText: string;
+  eventText?: string;
   selectedId: string | null;
   onSelect: (uid: string | null) => void;
   onMove: (uid: string, x: number, y: number) => void;
@@ -35,6 +36,7 @@ export default function StripCanvas({
   stickers,
   caption,
   dateText,
+  eventText,
   selectedId,
   onSelect,
   onMove,
@@ -91,6 +93,7 @@ export default function StripCanvas({
         stickers,
         caption,
         dateText,
+        eventText,
         selectedStickerId: selectedId,
       },
       1,
@@ -103,6 +106,7 @@ export default function StripCanvas({
     stickers,
     caption,
     dateText,
+    eventText,
     selectedId,
     height,
     fontsReady,
@@ -172,3 +176,4 @@ export default function StripCanvas({
     </div>
   );
 }
+

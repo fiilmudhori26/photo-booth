@@ -60,6 +60,8 @@ interface StudioStageProps {
   caption: string;
   onCaption: (value: string) => void;
   dateText: string;
+  eventText: string;
+  onEventText: (value: string) => void;
 
   format: ExportFormat;
   onFormat: (format: ExportFormat) => void;
@@ -94,6 +96,8 @@ export default function StudioStage(props: StudioStageProps) {
     caption,
     onCaption,
     dateText,
+    eventText,
+    onEventText,
     format,
     onFormat,
     onDownload,
@@ -139,6 +143,7 @@ export default function StudioStage(props: StudioStageProps) {
               stickers={stickers}
               caption={caption}
               dateText={dateText}
+              eventText={eventText}
               selectedId={selectedId}
               onSelect={onSelect}
               onMove={onMove}
@@ -332,6 +337,19 @@ export default function StudioStage(props: StudioStageProps) {
               />
               <p className="mt-1.5 font-hand text-sm text-inksoft">
                 {22 - caption.length} characters left
+              </p>
+            </div>
+
+            <div>
+              <h3 className="mb-2 font-display text-base text-ink">Event Text</h3>
+              <input
+                value={eventText}
+                onChange={(event) => onEventText(event.target.value.slice(0, 22))}
+                placeholder="Rani & Andre — Wedding 2026"
+                className="w-full rounded-2xl border-[3px] border-white bg-white/80 px-4 py-3 text-sm font-bold text-ink outline-none transition placeholder:font-normal placeholder:text-inksoft/70 focus:border-petal"
+              />
+              <p className="mt-1.5 font-hand text-sm text-inksoft">
+                Shown on the strip footer — optional
               </p>
             </div>
           </div>
