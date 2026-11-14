@@ -1,6 +1,6 @@
 "use client";
 
-import { Volume2, VolumeX, X } from "lucide-react";
+import { Camera, Heart } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { formatStamp, fileStamp } from "@/lib/date-stamp";
 import { downloadDataUrl } from "@/lib/download";
@@ -17,9 +17,14 @@ import SelectStep from "./steps/SelectStep";
 import CaptureStep from "./steps/CaptureStep";
 import EditStep from "./steps/EditStep";
 import ExportStep from "./steps/ExportStep";
-import { Stepper } from "./ui";
+import { MobileButton, Stepper, cx } from "./ui";
 
 type Step = "select" | "capture" | "edit" | "export";
+
+const POSE_COUNT = 3;
+const DEFAULT_COUNTDOWN = 3;
+
+const STEPS = ["Templates", "Capture", "Edit", "Export"] as const;
 
 export default function PhotoBoothApp() {
   // Step management
@@ -41,8 +46,6 @@ export default function PhotoBoothApp() {
   const [caption, setCaption] = useState("★ PHOTO BOOTH ★");
   const [format, setFormat] = useState<ExportFormat>("png");
   const [exporting, setExporting] = useState(false);
-  const [downloadError, setDownloadError] = useState<string | null>(null);
-  const [captureRunning, setCaptureRunning] = useState(false);
 
   // Sticker state
   const [stickers, setStickers] = useState<Array<{
@@ -70,19 +73,10 @@ export default function PhotoBoothApp() {
     };
   }, []);
 
-  // Any step change (including CaptureStep unmount) re-enables step navigation
-  useEffect(() => {
-    setCaptureRunning(false);
-  }, [step]);
-
   const play = useCallback((name: keyof typeof sfx, arg?: number) => {
     if (!soundRef.current) return;
     const fn = sfx[name] as unknown as (value?: number) => void;
     fn(arg);
-  }, []);
-
-  const handleCaptureRunningChange = useCallback((running: boolean) => {
-    setCaptureRunning(running);
   }, []);
 
   const dateText = formatStamp(sessionDate);
@@ -124,7 +118,6 @@ export default function PhotoBoothApp() {
 
   const handleDownload = async () => {
     if (!processed.length || exporting) return;
-    setDownloadError(null);
     setExporting(true);
     try {
       const dataUrl = await renderTemplateToDataUrl(
@@ -138,14 +131,13 @@ export default function PhotoBoothApp() {
       );
       play("success");
     } catch {
-      setDownloadError("Download failed. Please try again.");
+      // notice handled by EditStep via fallback
     } finally {
       setExporting(false);
     }
   };
 
   const handleRetake = () => {
-    setDownloadError(null);
     setRaws([]);
     setProcessed([]);
     setStickers([]);
@@ -156,7 +148,6 @@ export default function PhotoBoothApp() {
   };
 
   const handleStartOver = () => {
-    setDownloadError(null);
     setRaws([]);
     setProcessed([]);
     setStickers([]);
@@ -169,9 +160,12 @@ export default function PhotoBoothApp() {
     play("pop");
   };
 
+  const handleExport = () => {
+    setStep("export");
+  };
+
   const handleToggleMirror = () => setMirror((v) => !v);
   const handleToggleSound = () => setSoundOn((v) => !v);
-  const handleContinueToCamera = () => setStep("capture");
 
   // Sticker handlers
   const addSticker = (emoji: string) => {
@@ -222,25 +216,17 @@ export default function PhotoBoothApp() {
   const [capturedCountLocal, setCapturedCountLocal] = useState(0);
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-900">
+    <div className="flex h-full flex-col bg-slate-900">
       {/* Header */}
-      <header className="mx-auto flex w-full max-w-4xl items-center justify-between gap-3 px-4 pt-4 pb-3">
-        <div className="flex min-w-0 items-center gap-3">
-          <span
-            aria-hidden="true"
-            className="grid size-11 shrink-0 place-items-center rounded-2xl border border-white/20 bg-gradient-to-br from-rose-400 via-pink-500 to-violet-600 text-[1.35rem] shadow-[0_12px_30px_-12px_rgba(168,85,247,0.7)]"
-          >
+      <header className="mx-auto flex w-full max-w-4xl flex-wrap items-center justify-between gap-3 px-4 pt-4 pb-2">
+        <div className="flex items-center gap-3">
+          <span className="grid size-10 place-items-center rounded-[1.25rem] border-[3px] border-white bg-gradient-to-br from-petal to-violet text-2xl shadow-[0_14px_26px_-16px_rgba(192,132,252,0.95)]">
             📷
           </span>
-          <div className="min-w-0">
-            <h1 className="font-display text-xl leading-tight text-white">
-              Photo Booth
-            </h1>
-            <p className="font-hand text-sm leading-tight text-slate-400">
-              {step === "select" && "Choose a template to start"}
-              {step === "capture" && "Capture 3 poses"}
-              {step === "edit" && "Edit your photos"}
-              {step === "export" && "Download your strip"}
+          <div>
+            <h1 className="font-display text-lg text-white">Photo Booth</h1>
+            <p className="font-hand text-xs text-slate-400">
+              {step === "edit" ? "Edit your photos" : step === "export" ? "Download ready" : "Capture 3 poses"}
             </p>
           </div>
         </div>
@@ -249,44 +235,28 @@ export default function PhotoBoothApp() {
           type="button"
           onClick={handleToggleSound}
           aria-pressed={soundOn}
-          aria-label={soundOn ? "Turn sound effects off" : "Turn sound effects on"}
-          className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-slate-700/80 bg-slate-800/80 px-4 text-xs font-bold text-slate-200 transition hover:border-slate-600 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+          className="rounded-full border-[3px] border-white px-3 py-1.5 text-xs font-bold transition"
+          style={{
+            backgroundColor: soundOn ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.5)",
+            color: soundOn ? "#6b4a5a" : "#a3809a",
+          }}
         >
-          {soundOn ? (
-            <Volume2 className="size-4 text-indigo-300" aria-hidden="true" />
-          ) : (
-            <VolumeX className="size-4 text-slate-400" aria-hidden="true" />
-          )}
-          {soundOn ? "On" : "Off"}
+          {soundOn ? "🔊 On" : "🔇 Off"}
         </button>
       </header>
 
-      {/* Step indicator (fixed bottom bar) */}
-      <Stepper step={step} onChange={setStep} disabled={captureRunning} />
+      {/* Step indicator */}
+      <div className="mx-auto mb-4 max-w-4xl px-4">
+        <Stepper step={step} onChange={setStep} />
+      </div>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-x-hidden pb-[calc(6.5rem+env(safe-area-inset-bottom))]">
-        {(step === "edit" || step === "export") && downloadError && (
-          <div
-            role="alert"
-            className="mx-auto mb-3 flex w-full max-w-3xl items-center justify-between gap-3 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-2.5 text-sm font-semibold text-rose-200"
-          >
-            <span>{downloadError}</span>
-            <button
-              type="button"
-              onClick={() => setDownloadError(null)}
-              aria-label="Dismiss error"
-              className="grid size-9 shrink-0 place-items-center rounded-full text-rose-300 transition hover:bg-rose-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-400"
-            >
-              <X className="size-4" aria-hidden="true" />
-            </button>
-          </div>
-        )}
+      <main className="flex-1 overflow-y-auto pb-24">
         {step === "select" && (
           <SelectStep
             selectedTemplate={templateId}
             onSelect={setTemplateId}
-            onContinue={handleContinueToCamera}
+            onContinue={handleExport}
           />
         )}
 
@@ -297,13 +267,12 @@ export default function PhotoBoothApp() {
             mirror={mirror}
             onToggleMirror={handleToggleMirror}
             soundOn={soundOn}
-            onRunningChange={handleCaptureRunningChange}
+            onToggleSound={handleToggleSound}
           />
         )}
 
         {step === "edit" && (
           <EditStep
-            onContinue={() => setStep("export")}
             photos={processed}
             filterId={filterId}
             onFilter={setFilterId}
@@ -311,6 +280,8 @@ export default function PhotoBoothApp() {
             onCaption={setCaption}
             format={format}
             onFormat={setFormat}
+            templateId={templateId}
+            onTemplate={setTemplateId}
             dateText={dateText}
             exporting={exporting}
             onDownload={handleDownload}
@@ -331,6 +302,7 @@ export default function PhotoBoothApp() {
           <ExportStep
             exporting={exporting}
             processed={processed}
+            templateId={templateId}
             onDownload={handleDownload}
             onStartOver={handleStartOver}
             format={format}
@@ -340,15 +312,9 @@ export default function PhotoBoothApp() {
       </main>
 
       {/* Notice / Alerts */}
-      {step === "export" && exporting && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="pointer-events-none fixed bottom-24 left-1/2 z-40 -translate-x-1/2 rounded-full border border-slate-700 bg-slate-800/95 px-5 py-2 text-sm font-semibold text-slate-100 shadow-lg backdrop-blur"
-        >
-          Saving…
-        </div>
-      )}
+      <div className="mx-auto mb-4 max-w-xs rounded-full border-[3px] border-white bg-white/90 px-4 py-2 text-center text-sm font-bold text-ink shadow-[0_18px_36px_-24px_rgba(196,110,160,0.9)]">
+        {step === "export" && exporting ? "Saving…" : ""}
+      </div>
     </div>
   );
 }

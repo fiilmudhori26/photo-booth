@@ -9,14 +9,13 @@ import "@fontsource/gaegu/700.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Photo Booth — Snap 3 Poses, Download Your Strip",
+  title: "my dipaaa💕",
   description:
-    "A playful web photo booth — snap three poses, decorate your strip and download it in high resolution.",
-  applicationName: "Photo Booth",
+    "A cute and kawaii web photo booth — snap three poses, decorate your strip and download it in high resolution.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f172a",
+  themeColor: "#FBCFE8",
   width: "device-width",
   initialScale: 1,
 };

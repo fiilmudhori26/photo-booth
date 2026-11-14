@@ -1,34 +1,34 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { cx } from "./ui";
 
 interface EditorBottomSheetProps {
   open: boolean;
+  onClose: () => void;
   children: ReactNode;
-  title?: string;
 }
 
-/**
- * Edit tools container. Rendered inline in the page flow (not as a fixed
- * overlay) so the photo preview and the controls never cover each other.
- */
 export default function EditorBottomSheet({
   open,
+  onClose,
   children,
-  title = "Studio tools",
 }: EditorBottomSheetProps) {
-  if (!open) return null;
-
   return (
-    <section
-      role="region"
-      aria-label={title}
-      className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 sm:p-5"
+    <div
+      className={cx(
+        "fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300",
+        open ? "translate-y-0" : "translate-y-full",
+      )}
+      style={{
+        background: "rgba(15, 23, 42, 0.95)",
+        backdropFilter: "blur(20px)",
+      }}
     >
-      <h2 className="mb-3 font-display text-sm tracking-wide text-white">
-        {title}
-      </h2>
-      {children}
-    </section>
+      <div className="mb-2 flex justify-center">
+        <div className="h-1 w-12 rounded-full bg-slate-400/50" />
+      </div>
+      <div className="max-h-96 overflow-y-auto p-4">{children}</div>
+    </div>
   );
 }

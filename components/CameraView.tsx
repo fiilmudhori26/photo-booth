@@ -4,6 +4,7 @@ import {
   ArrowLeftRight,
   CameraOff,
   LoaderCircle,
+  RefreshCw,
   SwitchCamera,
 } from "lucide-react";
 import type { RefObject } from "react";
@@ -25,9 +26,15 @@ interface CameraViewProps {
   capturedCount: number;
   flash: boolean;
   capturing: boolean;
-  countdownLength: number;
-  onCountdownChange: (value: number) => void;
+  onCountdownChange?: (value: number | null) => void;
 }
+
+const CORNERS = [
+  "left-3 top-3",
+  "right-3 top-3",
+  "left-3 bottom-3",
+  "right-3 bottom-3",
+];
 
 export default function CameraView({
   videoRef,
@@ -44,11 +51,10 @@ export default function CameraView({
   capturedCount,
   flash,
   capturing,
-  countdownLength,
   onCountdownChange,
 }: CameraViewProps) {
   return (
-    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] border-[5px] border-white bg-gradient-to-br from-indigo-900/50 via-purple-900/30 to-pink-900/30 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
+    <div className="relative aspect-[4/3] w-full rounded-[2rem] border-[5px] border-white bg-gradient-to-br from-indigo-900/50 via-purple-900/30 to-pink-900/30 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
       {/* Video feed */}
       <video
         ref={videoRef}
@@ -65,15 +71,27 @@ export default function CameraView({
       {/* Soft vignette for dreamy booth look */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,transparent_45%,rgba(0,0,0,0.28)_100%)]" />
 
+      {/* Corner sparkles */}
+      {CORNERS.map((position) => (
+        <span
+          key={position}
+          className={cx(
+            "pointer-events-none absolute select-none text-2xl drop-shadow-sm",
+            position,
+          )}
+        >
+          ✨
+        </span>
+      ))}
 
       {/* Loading overlay */}
       {status === "requesting" && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-[1.75rem] bg-slate-900/85 backdrop-blur-sm">
-          <LoaderCircle className="size-10 animate-spin text-indigo-400" />
-          <p className="font-display text-lg text-white">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/75 backdrop-blur-sm rounded-[2rem]">
+          <LoaderCircle className="size-10 animate-spin text-indigo-600" />
+          <p className="font-display text-lg text-ink">
             Wake up the camera...
           </p>
-          <p className="font-hand text-base text-slate-300">
+          <p className="font-hand text-base text-slate-500">
             Get ready for the magic ✨
           </p>
         </div>
@@ -82,7 +100,7 @@ export default function CameraView({
       {/* Error overlay */}
       {status === "error" && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-[2rem] bg-gradient-to-br from-red-900/50 to-pink-900/50 p-6 text-center">
-          <CameraOff className="size-10 text-rose-400" aria-hidden="true" />
+          <CameraOff className="size-10 text-rose" />
           <p className="font-display text-lg text-white">
             Camera not available 🙈
           </p>
@@ -106,7 +124,7 @@ export default function CameraView({
           <div className="pointer-events-none absolute left-1/2 top-4 -translate-x-1/2">
             <span
               key={`pose-${poseIndex}`}
-              className="anim-pop inline-flex items-center gap-2 rounded-full border border-rose-300/40 bg-rose-600/90 px-4 py-1.5 font-bold text-sm text-white shadow-lg"
+              className="anim-pop inline-flex items-center gap-2 rounded-full border-2 border-white bg-rose/90 px-4 py-1.5 font-bold text-sm text-white shadow-lg"
             >
               💗 Pose {poseIndex + 1} of 3
             </span>
@@ -117,7 +135,7 @@ export default function CameraView({
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               <span
                 key={`count-${countdown}`}
-                className="anim-count font-display font-bold text-8xl text-white drop-shadow-lg sm:text-[10rem]"
+                className="anim-count font-bold text-white drop-shadow-lg sm:text-[10rem]"
                 style={{ textShadow: "0 4px 0 rgba(0,0,0,0.5)" }}
               >
                 {countdown}
@@ -125,45 +143,6 @@ export default function CameraView({
             </div>
           )}
         </>
-      )}
-
-      {/* Countdown picker - top center, only when idle */}
-      {status === "ready" && !capturing && (
-        <div className="absolute left-1/2 top-3 -translate-x-1/2">
-          <div className="flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/85 py-1.5 pl-4 pr-1.5 shadow-lg backdrop-blur">
-            <span
-              id="countdown-picker-label"
-              className="text-xs font-bold text-slate-400"
-            >
-              Countdown
-            </span>
-            <div
-              role="group"
-              aria-labelledby="countdown-picker-label"
-              className="flex items-center gap-1"
-            >
-              {[3, 5, 10].map((sec) => {
-                const active = countdownLength === sec;
-                return (
-                  <button
-                    key={sec}
-                    type="button"
-                    onClick={() => onCountdownChange(sec)}
-                    aria-pressed={active}
-                    className={cx(
-                      "min-h-11 min-w-11 rounded-full px-3 text-xs font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400",
-                      active
-                        ? "bg-indigo-500 text-white shadow"
-                        : "text-slate-300 hover:bg-slate-800 hover:text-white",
-                    )}
-                  >
-                    {sec}s
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
       )}
 
       {/* Flash effect */}
@@ -178,10 +157,10 @@ export default function CameraView({
           onClick={onToggleMirror}
           aria-pressed={mirror}
           className={cx(
-            "inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-xs font-bold shadow-lg backdrop-blur transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 active:translate-y-[1px]",
+            "inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-white px-3 text-xs font-bold shadow-lg backdrop-blur transition active:translate-y-[2px]",
             mirror
-              ? "border-rose-400/50 bg-rose-600 text-white"
-              : "border-slate-700 bg-slate-900/85 text-slate-100 hover:border-slate-600",
+              ? "bg-rose text-white"
+              : "bg-white/85 text-indigo-200 hover:bg-white",
           )}
         >
           <ArrowLeftRight className="size-4" />
@@ -192,7 +171,7 @@ export default function CameraView({
           <button
             type="button"
             onClick={onSwitchCamera}
-            className="inline-flex min-h-11 max-w-[11rem] items-center gap-2 rounded-full border border-slate-700 bg-slate-900/85 px-3.5 text-xs font-bold text-slate-100 shadow-lg backdrop-blur transition hover:border-slate-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            className="inline-flex max-w-[10rem] items-center gap-2 rounded-full border-2 border-white bg-white/85 px-3 text-xs font-bold text-indigo-200 shadow-lg backdrop-blur transition hover:bg-white active:translate-y-[2px]"
           >
             <SwitchCamera className="size-4 shrink-0" />
             <span className="truncate">{deviceLabel || "Switch"}</span>
@@ -201,7 +180,7 @@ export default function CameraView({
       </div>
 
       {/* Capture progress hearts */}
-      <div className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/85 px-3 py-2 shadow-lg backdrop-blur">
+      <div className="absolute bottom-4 right-4 flex items-center gap-1 rounded-full border-2 border-white bg-white/80 px-3 py-1.5 shadow-lg backdrop-blur">
         {[0, 1, 2].map((index) => (
           <span
             key={index}
@@ -214,6 +193,32 @@ export default function CameraView({
           </span>
         ))}
       </div>
+
+      {/* Bottom sheet capture controls - only visible in camera ready state */}
+      {status === "ready" && !capturing && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+          <div className="flex items-center gap-3 rounded-full border-2 border-white bg-white/80 px-4 py-2 shadow-lg backdrop-blur">
+            <span className="text-xs font-bold text-indigo-600">Countdown:</span>
+            {[3, 5, 10].map((sec) => (
+              <button
+                key={sec}
+                type="button"
+                onClick={() => {
+                  if (onCountdownChange) onCountdownChange(sec);
+                }}
+                className={cx(
+                  "rounded-full px-3 py-1 text-xs font-bold transition",
+                  countdown === sec
+                    ? "bg-indigo-600 text-white"
+                    : "bg-white/70 text-indigo-600 hover:bg-white",
+                )}
+              >
+                {sec}s
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

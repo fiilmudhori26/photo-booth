@@ -52,10 +52,10 @@ export default function StickerPanel({
             disabled={full}
             onClick={() => onAddSticker(preset.emoji)}
             className={cx(
-              "flex aspect-square min-h-12 items-center justify-center rounded-xl border text-xl transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:opacity-50",
+              "flex aspect-square items-center justify-center rounded-xl border-[3px] text-xl transition disabled:opacity-50",
               full
-                ? "border-slate-800 bg-slate-800/60 text-slate-400"
-                : "border-slate-700 bg-slate-800/60 text-white hover:border-slate-600 hover:bg-slate-700/70",
+                ? "border-slate-700/50 bg-slate-800/60 text-slate-500"
+                : "border-white bg-white/10 text-white hover:bg-white/20",
             )}
           >
             {preset.emoji}
@@ -68,13 +68,13 @@ export default function StickerPanel({
         onClick={onAddDateSticker}
         disabled={full}
         className={cx(
-          "flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border px-4 py-3 font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:opacity-50",
+          "w-full rounded-2xl border-[3px] px-4 py-3 font-bold transition disabled:opacity-50",
           full
-            ? "border-slate-800 bg-slate-800/60 text-slate-400"
-            : "border-slate-700 bg-slate-800/60 text-slate-100 hover:border-slate-600 hover:bg-slate-700/70",
+            ? "border-slate-700/50 bg-slate-800/60 text-slate-500"
+            : "border-white bg-white/10 text-white hover:bg-white/20",
         )}
       >
-        <Calendar className="size-5" aria-hidden="true" />
+        <Calendar className="mb-1 size-5" />
         Add Date
       </button>
 
@@ -91,10 +91,9 @@ export default function StickerPanel({
             <button
               type="button"
               onClick={() => onRemoveSticker(selectedSticker.uid)}
-              aria-label="Remove selected sticker"
-              className="ml-auto grid size-11 place-items-center rounded-full border border-slate-700 bg-slate-800/80 text-rose-300 transition hover:border-rose-500/50 hover:text-rose-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              className="ml-auto rounded-full border-2 border-white bg-white/80 text-rose transition"
             >
-              <Eraser className="size-5" aria-hidden="true" />
+              <Eraser className="size-4" />
             </button>
           </div>
 
@@ -116,8 +115,7 @@ export default function StickerPanel({
                   size: Number(e.target.value),
                 })
               }
-              aria-label="Sticker size"
-              className="w-full accent-indigo-500"
+              className="w-full"
             />
           </div>
 
@@ -129,9 +127,9 @@ export default function StickerPanel({
                   rotation: selectedSticker.rotation - 15,
                 })
               }
-              className="min-h-11 rounded-full border border-slate-700 bg-slate-900/60 px-4 py-2 text-xs font-bold text-slate-300 transition hover:border-slate-600 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              className="rounded-full border-2 border-slate-700/50 bg-slate-900/40 px-3 py-1.5 text-xs font-bold text-slate-300 transition"
             >
-              Rotate −15°
+              Rotate −
             </button>
             <button
               type="button"
@@ -140,9 +138,9 @@ export default function StickerPanel({
                   rotation: selectedSticker.rotation + 15,
                 })
               }
-              className="min-h-11 rounded-full border border-slate-700 bg-slate-900/60 px-4 py-2 text-xs font-bold text-slate-300 transition hover:border-slate-600 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              className="rounded-full border-2 border-slate-700/50 bg-slate-900/40 px-3 py-1.5 text-xs font-bold text-slate-300 transition"
             >
-              Rotate +15°
+              Rotate +
             </button>
           </div>
         </div>
@@ -152,7 +150,7 @@ export default function StickerPanel({
         <button
           type="button"
           onClick={onClearStickers}
-          className="min-h-12 w-full rounded-2xl border border-slate-800 bg-slate-900/60 px-4 py-3 font-bold text-slate-300 transition hover:border-slate-700 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+          className="w-full rounded-2xl border-[3px] border-slate-700/50 bg-slate-900/40 px-4 py-3 font-bold text-slate-300 transition"
         >
           Clear all stickers
         </button>
