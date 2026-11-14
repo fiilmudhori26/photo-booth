@@ -49,7 +49,7 @@ export default function StripCanvas({
   const [fontsReady, setFontsReady] = useState(false);
   const [dragging, setDragging] = useState(false);
 
-  const height = stripHeight(pad);
+  const height = stripHeight(pad, photos.length || 3);
   const photosKey = photos.join("|");
 
   useEffect(() => {
@@ -176,4 +176,5 @@ export default function StripCanvas({
     </div>
   );
 }
+
 

@@ -29,9 +29,10 @@ export function photoBox(pad: number): PhotoBox {
   return { w, h: w / PHOTO_ASPECT };
 }
 
-export function stripHeight(pad: number): number {
+/** Strip height for a given number of photo slots (defaults to 3). */
+export function stripHeight(pad: number, count = 3): number {
   const { h } = photoBox(pad);
-  return pad * 2 + FOOTER_H + h * 3 + PHOTO_GAP * 2;
+  return pad * 2 + FOOTER_H + h * count + PHOTO_GAP * (count - 1);
 }
 
 export function photoSlot(index: number, pad: number) {
@@ -73,6 +74,21 @@ function heartPath(
   ctx.bezierCurveTo(x - s * 0.5, y + s * 0.62, x, y + s * 0.84, x, y + s);
   ctx.bezierCurveTo(x, y + s * 0.84, x + s * 0.5, y + s * 0.62, x + s * 0.5, y + s * 0.32);
   ctx.bezierCurveTo(x + s * 0.5, y, x, y, x, y + s * 0.32);
+  ctx.closePath();
+}
+
+function sparklePath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  s: number,
+) {
+  ctx.beginPath();
+  ctx.moveTo(x, y - s);
+  ctx.quadraticCurveTo(x, y, x + s, y);
+  ctx.quadraticCurveTo(x, y, x, y + s);
+  ctx.quadraticCurveTo(x, y, x - s, y);
+  ctx.quadraticCurveTo(x, y, x, y - s);
   ctx.closePath();
 }
 
@@ -135,6 +151,27 @@ function drawPattern(
       ctx.beginPath();
       ctx.moveTo(0, y);
       ctx.lineTo(w, y);
+      ctx.stroke();
+    }
+  } else if (id === "sparkle") {
+    for (let row = 0, y = tile / 2; y < h + tile; row++, y += tile) {
+      const offset = row % 2 ? tile / 2 : 0;
+      for (let x = offset + tile / 2; x < w + tile; x += tile) {
+        sparklePath(ctx, x, y, 9);
+        ctx.fill();
+      }
+    }
+  } else if (id === "waves") {
+    ctx.lineWidth = 6;
+    const amplitude = 9;
+    const wavelength = 64;
+    for (let y = tile / 2; y < h + tile; y += 48) {
+      ctx.beginPath();
+      for (let x = 0; x <= w + wavelength; x += 4) {
+        const yy = y + Math.sin((x / wavelength) * Math.PI * 2) * amplitude;
+        if (x === 0) ctx.moveTo(x, yy);
+        else ctx.lineTo(x, yy);
+      }
       ctx.stroke();
     }
   }

@@ -5,16 +5,15 @@ import { useRef, useState } from "react";
 import { fileToShot, isImageFile } from "@/lib/upload";
 import { KawaiiButton, Panel, cx } from "./ui";
 
-const SLOT_COUNT = 3;
-
 interface UploadStageProps {
   onBack: () => void;
   onComplete: (shots: string[]) => void;
+  photoCount?: number;
 }
 
-export default function UploadStage({ onBack, onComplete }: UploadStageProps) {
+export default function UploadStage({ onBack, onComplete, photoCount = 3 }: UploadStageProps) {
   const [slots, setSlots] = useState<(string | null)[]>(
-    Array.from({ length: SLOT_COUNT }, () => null),
+    Array.from({ length: photoCount }, () => null),
   );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +21,7 @@ export default function UploadStage({ onBack, onComplete }: UploadStageProps) {
   const targetRef = useRef(0);
 
   const shots = slots.filter((slot): slot is string => Boolean(slot));
-  const missing = SLOT_COUNT - shots.length;
+  const missing = photoCount - shots.length;
 
   const pick = (index: number) => {
     targetRef.current = index;
@@ -46,7 +45,7 @@ export default function UploadStage({ onBack, onComplete }: UploadStageProps) {
     const target = targetRef.current;
     // The tapped slot is filled (or replaced) first, then any empty ones.
     const order = [target];
-    for (let i = 0; i < SLOT_COUNT; i += 1) {
+    for (let i = 0; i < photoCount; i += 1) {
       if (i !== target && !next[i]) order.push(i);
     }
 
@@ -73,7 +72,7 @@ export default function UploadStage({ onBack, onComplete }: UploadStageProps) {
     <Panel
       title="Upload from gallery"
       icon="🖼️"
-      hint={`${shots.length}/${SLOT_COUNT} chosen`}
+      hint={`${shots.length}/${photoCount} chosen`}
       className="mx-auto max-w-3xl"
     >
       <input
@@ -89,11 +88,14 @@ export default function UploadStage({ onBack, onComplete }: UploadStageProps) {
       />
 
       <p className="font-hand text-base leading-snug text-inksoft">
-        Pick three photos from your camera roll, screenshots — anything. Tap a slot
+        Pick {photoCount} photos from your camera roll, screenshots — anything. Tap a slot
         again any time to swap that photo out.
       </p>
 
-      <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+      <div
+        className="mt-5 grid gap-2 sm:gap-3"
+        style={{ gridTemplateColumns: `repeat(${photoCount}, minmax(0, 1fr))` }}
+      >
         {slots.map((slot, index) => (
           <div key={index} className="relative">
             <button
@@ -176,3 +178,4 @@ export default function UploadStage({ onBack, onComplete }: UploadStageProps) {
     </Panel>
   );
 }
+

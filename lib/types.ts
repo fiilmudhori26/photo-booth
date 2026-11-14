@@ -37,7 +37,9 @@ export type PatternId =
   | "hearts"
   | "stripes"
   | "checker"
-  | "grid";
+  | "grid"
+  | "sparkle"
+  | "waves";
 
 export type ExportFormat = "png" | "jpg";
 

@@ -42,7 +42,7 @@ export async function renderStripGif(opts: StripGifOptions): Promise<string> {
     await document.fonts.ready;
   }
 
-  const height = stripHeight(opts.pad);
+  const height = stripHeight(opts.pad, opts.grabs.length || 3);
   const width = Math.round(STRIP_W * scale);
   const canvasHeight = Math.round(height * scale);
   const canvas = document.createElement("canvas");
@@ -91,3 +91,4 @@ export async function renderStripGif(opts: StripGifOptions): Promise<string> {
   }
   return `data:image/gif;base64,${btoa(binary)}`;
 }
+

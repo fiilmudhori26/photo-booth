@@ -38,7 +38,7 @@ import { KawaiiButton, Panel, StatPill, cx } from "./ui";
 
 type Stage = "intro" | "camera" | "capturing" | "upload" | "studio";
 
-const POSE_COUNT = 3;
+const PHOTO_COUNTS = [3, 4, 5, 6] as const;
 
 const DECOR: { emoji: string; className: string; delay: string }[] = [
   { emoji: "💖", className: "left-[4%] top-[14%]", delay: "0s" },
@@ -85,6 +85,7 @@ export default function PhotoBoothApp() {
   const [soundOn, setSoundOn] = useState(true);
 
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [photoCount, setPhotoCount] = useState(3);
   const [poseIndex, setPoseIndex] = useState(0);
   const [capturedCount, setCapturedCount] = useState(0);
   const [flash, setFlash] = useState(false);
@@ -154,7 +155,7 @@ export default function PhotoBoothApp() {
 
     const shots: string[] = [];
 
-    for (let index = 0; index < POSE_COUNT; index += 1) {
+    for (let index = 0; index < photoCount; index += 1) {
       if (!aliveRef.current) return;
       setPoseIndex(index);
       play("sparkle");
@@ -197,7 +198,7 @@ export default function PhotoBoothApp() {
       if (frame) shots.push(frame);
       setCapturedCount(shots.length);
 
-      if (index < POSE_COUNT - 1) {
+      if (index < photoCount - 1) {
         await new Promise((resolve) => setTimeout(resolve, 750));
       }
     }
@@ -425,7 +426,7 @@ export default function PhotoBoothApp() {
               my dipaaa💕
             </h1>
             <p className="font-hand text-sm text-inksoft sm:text-base">
-              snap 3 cute poses · decorate · download
+              snap {photoCount} cute poses · decorate · download
             </p>
           </div>
         </div>
@@ -494,14 +495,14 @@ export default function PhotoBoothApp() {
               Welcome to the cutest little photo booth
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-ink/80 sm:text-base">
-              Allow your camera and snap three poses with a countdown — or upload
-              photos from your gallery instead. Then dress up your strip with pastel
-              filters, frames and stickers. Everything stays on your device.
+              Allow your camera and snap {photoCount} photos with a countdown — or
+              upload photos from your gallery instead. Then dress up your strip with
+              pastel filters, frames and stickers. Everything stays on your device.
             </p>
 
             <div className="mt-7 grid gap-3 sm:grid-cols-3">
               {[
-                { icon: <Camera className="size-5" />, title: "3 poses", text: "Countdown, flash and cute pose prompts." },
+                { icon: <Camera className="size-5" />, title: `${photoCount} photos`, text: "Countdown, flash and cute pose prompts." },
                 { icon: <WandSparkles className="size-5" />, title: "8 filters", text: "Pastel bloom, vintage warm, mono and more." },
                 { icon: <Sparkles className="size-5" />, title: "Stickers", text: "Frames, patterns, hearts and date stamps." },
               ].map((item) => (
@@ -515,6 +516,33 @@ export default function PhotoBoothApp() {
                   </p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-6">
+              <p className="font-display text-base text-ink">Photos per strip</p>
+              <div
+                role="radiogroup"
+                aria-label="Photos per strip"
+                className="mt-2 inline-flex flex-wrap items-center gap-2"
+              >
+                {PHOTO_COUNTS.map((count) => (
+                  <button
+                    key={count}
+                    type="button"
+                    role="radio"
+                    aria-checked={photoCount === count}
+                    onClick={() => setPhotoCount(count)}
+                    className={cx(
+                      "size-14 rounded-2xl border-[3px] text-lg font-black transition active:translate-y-[2px]",
+                      photoCount === count
+                        ? "border-white bg-gradient-to-b from-bubble to-rose text-white shadow-[0_12px_24px_-16px_rgba(196,110,160,0.95)]"
+                        : "border-white/80 bg-white/70 text-ink hover:bg-white",
+                    )}
+                  >
+                    {count}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
@@ -562,6 +590,7 @@ export default function PhotoBoothApp() {
               countdown={countdown}
               poseIndex={poseIndex}
               capturedCount={capturedCount}
+              poseCount={photoCount}
               flash={flash}
               capturing={capturing}
             />
@@ -572,8 +601,8 @@ export default function PhotoBoothApp() {
               </h2>
               <p className="mt-2 font-hand text-base leading-snug text-inksoft">
                 {capturing
-                  ? `Pose ${poseIndex + 1} of ${POSE_COUNT} — hold that smile, the flash is coming.`
-                  : "Three quick poses with a 3-2-1 countdown, then it is decorating time."}
+                  ? `Pose ${poseIndex + 1} of ${photoCount} — hold that smile, the flash is coming.`
+                  : `${photoCount} photos with a 3-2-1 countdown, then it is decorating time.`}
               </p>
 
               <div className="mt-4 flex flex-wrap gap-2">
@@ -581,7 +610,7 @@ export default function PhotoBoothApp() {
                   {camera.status === "ready" ? "Camera live" : "Camera idle"}
                 </StatPill>
                 <StatPill icon={<Heart className="size-3.5" />}>
-                  {capturedCount}/{POSE_COUNT} snapped
+                  {capturedCount}/{photoCount} snapped
                 </StatPill>
               </div>
 
@@ -637,6 +666,7 @@ export default function PhotoBoothApp() {
           <UploadStage
             onBack={() => setStage("intro")}
             onComplete={useGalleryShots}
+            photoCount={photoCount}
           />
         )}
 
@@ -702,3 +732,4 @@ export default function PhotoBoothApp() {
     </div>
   );
 }
+

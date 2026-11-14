@@ -24,6 +24,7 @@ interface CameraStageProps {
   countdown: number | null;
   poseIndex: number;
   capturedCount: number;
+  poseCount?: number;
   flash: boolean;
   capturing: boolean;
 }
@@ -48,6 +49,7 @@ export default function CameraStage({
   countdown,
   poseIndex,
   capturedCount,
+  poseCount = 3,
   flash,
   capturing,
 }: CameraStageProps) {
@@ -113,7 +115,7 @@ export default function CameraStage({
                 key={`pose-${poseIndex}`}
                 className="anim-pop inline-flex items-center gap-2 rounded-full border-2 border-white bg-rose/90 px-4 py-1.5 font-display text-sm text-white shadow-lg"
               >
-                💗 Pose {poseIndex + 1} of 3
+                💗 Pose {poseIndex + 1} of {poseCount}
               </span>
             </div>
 

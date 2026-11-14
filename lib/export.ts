@@ -35,7 +35,7 @@ export async function renderStripToDataUrl(
     options.photos.map((src) => loadImage(src).catch(() => null)),
   );
 
-  const height = stripHeight(options.pad);
+  const height = stripHeight(options.pad, options.photos.length || 3);
   const canvas = document.createElement("canvas");
   canvas.width = Math.round(STRIP_W * EXPORT_SCALE);
   canvas.height = Math.round(height * EXPORT_SCALE);
@@ -66,3 +66,4 @@ export function downloadDataUrl(dataUrl: string, filename: string) {
   link.click();
   link.remove();
 }
+

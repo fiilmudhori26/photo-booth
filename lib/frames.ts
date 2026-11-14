@@ -271,4 +271,6 @@ export const PATTERNS: PatternPreset[] = [
   { id: "stripes", label: "Ribbon", icon: "🎀" },
   { id: "checker", label: "Picnic", icon: "🏁" },
   { id: "grid", label: "Grid", icon: "📐" },
+  { id: "sparkle", label: "Sparkle", icon: "✨" },
+  { id: "waves", label: "Waves", icon: "〰️" },
 ];
