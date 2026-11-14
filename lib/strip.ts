@@ -274,7 +274,7 @@ export function drawStrip(
   scale = 1,
 ) {
   const frame = getFrame(opts.frameId);
-  const height = stripHeight(opts.pad);
+  const height = stripHeight(opts.pad, opts.photos.length || 3);
 
   ctx.save();
   ctx.scale(scale, scale);
