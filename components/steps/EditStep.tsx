@@ -1,11 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import {
+  ArrowRight,
+  Image as ImageIcon,
+  RotateCcw,
+  Sticker,
+  Type,
+  Wand2,
+} from "lucide-react";
 import type {
   ExportFormat,
   FilterId,
   StickerItem,
-  TemplateId,
 } from "@/lib/types";
 import EditorBottomSheet from "../EditorBottomSheet";
 import FilterPanel from "./edit/FilterPanel";
@@ -24,9 +31,8 @@ interface EditStepProps {
   onCaption: (value: string) => void;
   format: ExportFormat;
   onFormat: (format: ExportFormat) => void;
-  templateId: TemplateId;
-  onTemplate: (id: TemplateId) => void;
   dateText: string;
+  onContinue: () => void;
   exporting: boolean;
   onDownload: () => void;
   onRetake: () => void;
@@ -41,6 +47,17 @@ interface EditStepProps {
   onClearStickers: () => void;
 }
 
+const TABS: {
+  id: Tab;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+}[] = [
+  { id: "filters", label: "Filters", icon: Wand2 },
+  { id: "retake", label: "Retake", icon: RotateCcw },
+  { id: "adjust", label: "Adjust", icon: Type },
+  { id: "decorate", label: "Decorate", icon: Sticker },
+];
+
 export default function EditStep({
   photos,
   filterId,
@@ -49,8 +66,7 @@ export default function EditStep({
   onCaption,
   format,
   onFormat,
-  templateId,
-  onTemplate,
+  onContinue,
   dateText,
   exporting,
   onDownload,
@@ -67,65 +83,76 @@ export default function EditStep({
 }: EditStepProps) {
   const [tab, setTab] = useState<Tab>("filters");
 
-  const TABS: { id: Tab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-    { id: "filters", label: "Filters", icon: () => <span className="size-4">🎨</span> },
-    { id: "retake", label: "Retake", icon: () => <span className="size-4">↻</span> },
-    { id: "adjust", label: "Adjust", icon: () => <span className="size-4">🔍</span> },
-    { id: "decorate", label: "Decorate", icon: () => <span className="size-4">✨</span> },
-  ];
-
   return (
-    <div className="mx-auto max-w-3xl space-y-4 px-4 pb-24">
-      <div className="rounded-2xl border-[3px] border-slate-700/50 bg-slate-800/60 flex items-center justify-center">
+    <div className="mx-auto w-full max-w-3xl space-y-4 px-4">
+      {/* Preview */}
+      <figure className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-800/40 p-3">
         {photos.length > 0 ? (
           <img
             src={photos[0]}
-            alt="Photo preview"
-            className="h-full w-full object-cover"
+            alt="Preview of the first captured photo"
+            className="mx-auto max-h-[42vh] w-auto max-w-full rounded-xl object-contain sm:max-h-[50vh]"
           />
         ) : (
-          <p className="font-hand text-xs text-slate-500">No photos captured</p>
+          <div className="flex h-48 flex-col items-center justify-center gap-2 text-center">
+            <ImageIcon className="size-8 text-slate-400" aria-hidden="true" />
+            <p className="text-sm text-slate-400">
+              No photos captured yet — go back to Capture to snap your poses.
+            </p>
+          </div>
         )}
-      </div>
+      </figure>
 
       {/* Mini thumbnails */}
-      <div className="mt-3 flex gap-2">
+      <div className="flex gap-2" aria-label="Captured photos">
         {photos.map((src, index) => (
-          <div
+          <img
             key={index}
-            className="h-12 w-12 overflow-hidden rounded-lg border-2 border-slate-700/50 bg-slate-800"
-          >
-            <img src={src} alt={`Photo ${index + 1}`} className="h-full w-full object-cover" />
-          </div>
+            src={src}
+            alt={`Captured photo ${index + 1} of ${photos.length}`}
+            className="h-14 w-14 rounded-xl border border-slate-800 bg-slate-800 object-cover"
+          />
         ))}
-        {photos.length < 3 && (
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-dashed border-slate-700/50">
-            <span className="text-xs text-slate-500">{photos.length + 1}</span>
-          </div>
+        {Array.from({ length: Math.max(0, 3 - photos.length) }).map(
+          (_, index) => (
+            <div
+              key={`empty-${index}`}
+              aria-hidden="true"
+              className="flex h-14 w-14 items-center justify-center rounded-xl border border-dashed border-slate-800 text-xs font-bold text-slate-400"
+            >
+              {photos.length + index + 1}
+            </div>
+          ),
         )}
       </div>
 
-      <EditorBottomSheet open={true} onClose={onRetake}>
+      <EditorBottomSheet open title="Studio tools">
         {/* Tab Navigation */}
-        <div className="mb-4">
-          <div className="flex items-center gap-1 rounded-2xl border-[3px] border-slate-700/50 bg-slate-900/60 p-1">
-            {TABS.map(({ id, label, icon: Icon }) => (
+        <div
+          role="group"
+          aria-label="Editing tools"
+          className="mb-4 flex gap-1 rounded-2xl border border-slate-800 bg-slate-900/60 p-1"
+        >
+          {TABS.map(({ id, label, icon: Icon }) => {
+            const active = tab === id;
+            return (
               <button
                 key={id}
                 type="button"
                 onClick={() => setTab(id)}
+                aria-pressed={active}
                 className={cx(
-                  "flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium transition",
-                  tab === id
+                  "flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-xl px-1.5 py-2 text-[11px] font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 sm:gap-2 sm:px-3 sm:text-xs",
+                  active
                     ? "bg-indigo-600 text-white shadow"
-                    : "text-slate-300 hover:bg-slate-800",
+                    : "text-slate-300 hover:bg-slate-800 hover:text-white",
                 )}
               >
-                <Icon className="size-4" />
-                {label}
+                <Icon className="size-4 shrink-0" aria-hidden="true" />
+                <span className="truncate">{label}</span>
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
         {/* Tab Content */}
@@ -153,8 +180,7 @@ export default function EditStep({
             format={format}
             onFormat={onFormat}
             exporting={exporting}
-            templateId={templateId}
-            onTemplate={onTemplate}
+            hasPhotos={photos.length > 0}
             onDownload={onDownload}
           />
         )}
@@ -171,6 +197,16 @@ export default function EditStep({
           />
         )}
       </EditorBottomSheet>
+
+      {/* Primary CTA: continue to export */}
+      <button
+        type="button"
+        onClick={onContinue}
+        className="flex min-h-13 w-full items-center justify-center gap-2 rounded-2xl border border-transparent bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 text-base font-bold text-white shadow-[0_16px_36px_-16px_rgba(99,102,241,0.65)] transition hover:from-indigo-500 hover:to-purple-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+      >
+        Continue to Export
+        <ArrowRight className="size-5" aria-hidden="true" />
+      </button>
     </div>
   );
 }

@@ -76,9 +76,16 @@ describe("Template System", () => {
   });
 
   describe("Template 3: Modern Graphic", () => {
-    it("has 6 photo slots in staggered 2-column layout", () => {
+    it("has 8 photo slots in staggered 2-column layout", () => {
       const template = getTemplate("modern-graphic");
-      expect(template.photoSlots).toHaveLength(6);
+      expect(template.photoSlots).toHaveLength(8);
+
+      // Verify staggered 2-column structure (4 rows, 2 columns)
+      const leftColumn = template.photoSlots.filter((s) => s.x < 600);
+      const rightColumn = template.photoSlots.filter((s) => s.x >= 600);
+
+      expect(leftColumn).toHaveLength(4);
+      expect(rightColumn).toHaveLength(4);
     });
   });
 
