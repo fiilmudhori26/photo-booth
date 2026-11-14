@@ -10,6 +10,7 @@ import {
   Palette,
   Redo2,
   RefreshCw,
+  Share2,
   RotateCcw,
   Sparkles,
   Sticker as StickerIcon,
@@ -67,6 +68,8 @@ interface StudioStageProps {
   onFormat: (format: ExportFormat) => void;
   onDownload: () => void;
   exporting: boolean;
+  onShare: () => void;
+  sharing: boolean;
 
   onRetake: () => void;
   onStartOver: () => void;
@@ -102,6 +105,8 @@ export default function StudioStage(props: StudioStageProps) {
     onFormat,
     onDownload,
     exporting,
+    onShare,
+    sharing,
     onRetake,
     onStartOver,
   } = props;
@@ -165,11 +170,11 @@ export default function StudioStage(props: StudioStageProps) {
           Tap a sticker on the strip to edit it
         </p>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
           <KawaiiButton
             variant="primary"
             block
-            disabled={exporting || !photos.length}
+            disabled={exporting || sharing || !photos.length}
             onClick={onDownload}
             icon={
               exporting ? (
@@ -180,6 +185,20 @@ export default function StudioStage(props: StudioStageProps) {
             }
           >
             {exporting ? "Saving…" : "Download Strip"}
+          </KawaiiButton>
+          <KawaiiButton
+            block
+            disabled={exporting || sharing || !photos.length}
+            onClick={onShare}
+            icon={
+              sharing ? (
+                <LoaderCircle className="size-5 animate-spin" />
+              ) : (
+                <Share2 className="size-5" />
+              )
+            }
+          >
+            {sharing ? "Sharing…" : "Share Strip"}
           </KawaiiButton>
           <KawaiiButton
             block

@@ -13,6 +13,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import { renderFilteredShot } from "@/lib/filters";
 import { DEFAULT_FRAME } from "@/lib/frames";
+import { shareImage } from "@/lib/share";
 import {
   downloadDataUrl,
   fileStamp,
@@ -74,6 +75,7 @@ export default function PhotoBoothApp() {
 
   const [format, setFormat] = useState<ExportFormat>("png");
   const [exporting, setExporting] = useState(false);
+  const [sharing, setSharing] = useState(false);
 
   const [sessionDate, setSessionDate] = useState(() => new Date());
   const [mirror, setMirror] = useState(true);
@@ -269,6 +271,41 @@ export default function PhotoBoothApp() {
       setNotice("Hmm, the strip could not be saved. Please try again.");
     } finally {
       setExporting(false);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!processed.length || sharing || exporting) return;
+    setSharing(true);
+    setNotice(null);
+    try {
+      const dataUrl = await renderStripToDataUrl(
+        {
+          photos: processed,
+          frameId,
+          pattern,
+          pad,
+          stickers,
+          caption,
+          dateText,
+          eventText,
+        },
+        "png",
+      );
+      const result = await shareImage(dataUrl, {
+        title: "my dipaaa",
+        text: "My photo strip 💖",
+        format: "png",
+      });
+      setNotice(
+        result === "shared"
+          ? "Shared — kawaii! 💌"
+          : "Saved to your device — kawaii! 💖",
+      );
+    } catch {
+      setNotice("Hmm, the strip could not be shared. Please try again.");
+    } finally {
+      setSharing(false);
     }
   };
 
@@ -573,6 +610,8 @@ export default function PhotoBoothApp() {
             onFormat={setFormat}
             onDownload={() => void handleDownload()}
             exporting={exporting}
+            onShare={() => void handleShare()}
+            sharing={sharing}
             onRetake={retakePhotos}
             onStartOver={startOver}
           />
