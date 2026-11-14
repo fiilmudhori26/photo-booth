@@ -18,7 +18,12 @@ export type FrameId =
   | "sky"
   | "strawberry"
   | "milktea"
-  | "coral";
+  | "coral"
+  | "floral"
+  | "retro"
+  | "korean"
+  | "bubblegum"
+  | "mocha";
 
 export type PatternId = "none" | "dots" | "hearts" | "stripes" | "checker";
 
