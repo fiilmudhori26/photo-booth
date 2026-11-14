@@ -13,6 +13,9 @@ export const FILTER_PRESETS: FilterPreset[] = [
   { id: "vintage", label: "Vintage Warm", icon: "🍮", hint: "Faded & toasty" },
   { id: "pink", label: "Pastel Bloom", icon: "🧁", hint: "Dreamy pink glow" },
   { id: "contrast", label: "Punchy Pop", icon: "🍬", hint: "High contrast" },
+  { id: "sepia", label: "Sepia Nostalgia", icon: "📜", hint: "Old-time warm paper" },
+  { id: "grain", label: "Film Grain", icon: "🎞️", hint: "35mm texture" },
+  { id: "lightleak", label: "Light Leak", icon: "🌅", hint: "Soft sunburn glow" },
 ];
 
 const clamp255 = (v: number) => (v < 0 ? 0 : v > 255 ? 255 : v);
@@ -62,6 +65,15 @@ export function applyFilterToData(id: FilterId, d: Uint8ClampedArray) {
         b = clamp255(b + 11);
         break;
       }
+      case "sepia": {
+        const sr = 0.393 * r + 0.769 * g + 0.189 * b;
+        const sg = 0.349 * r + 0.686 * g + 0.168 * b;
+        const sb = 0.272 * r + 0.534 * g + 0.131 * b;
+        r = clamp255(sr * 0.92 + 14);
+        g = clamp255(sg * 0.88 + 10);
+        b = clamp255(sb * 0.72);
+        break;
+      }
       case "contrast": {
         r = clamp255((r - 128) * 1.52 + 134);
         g = clamp255((g - 128) * 1.52 + 134);
@@ -79,6 +91,79 @@ export function applyFilterToData(id: FilterId, d: Uint8ClampedArray) {
     d[i] = r;
     d[i + 1] = g;
     d[i + 2] = b;
+  }
+}
+
+/** Deterministic pseudo-random in [0, 1) — keeps re-renders stable. */
+function mulberry32(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * Spatial post-process for filters that need neighbourhood/coordinate
+ * information (film grain, light leak). Called on the 2D context after
+ * point-ops have been baked, so preview and export stay identical.
+ */
+function applySpatialFilter(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  id: FilterId,
+) {
+  if (id === "grain") {
+    const image = ctx.getImageData(0, 0, width, height);
+    const d = image.data;
+    const rand = mulberry32(0x9e3779b9);
+    for (let i = 0; i < d.length; i += 4) {
+      const l = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+      const midWeight = 1 - Math.abs(l - 128) / 128;
+      const noise = (rand() - 0.5) * 46 * (0.35 + 0.65 * midWeight);
+      d[i] = clamp255(d[i] + noise);
+      d[i + 1] = clamp255(d[i + 1] + noise);
+      d[i + 2] = clamp255(d[i + 2] + noise);
+    }
+    ctx.putImageData(image, 0, 0);
+  } else if (id === "lightleak") {
+    const radius = Math.max(width, height) * 0.85;
+    const originX = width * 0.88;
+    const originY = height * 0.08;
+    const grad = ctx.createRadialGradient(
+      originX,
+      originY,
+      0,
+      originX,
+      originY,
+      radius,
+    );
+    grad.addColorStop(0, "rgba(255, 196, 120, 0.85)");
+    grad.addColorStop(0.35, "rgba(255, 138, 160, 0.45)");
+    grad.addColorStop(0.7, "rgba(255, 196, 120, 0.08)");
+    grad.addColorStop(1, "rgba(255, 255, 255, 0)");
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, height);
+    // Secondary soft streak from the opposite side.
+    const streak = ctx.createRadialGradient(
+      width * 0.08,
+      height * 0.9,
+      0,
+      width * 0.08,
+      height * 0.9,
+      radius * 0.55,
+    );
+    streak.addColorStop(0, "rgba(255, 150, 150, 0.4)");
+    streak.addColorStop(1, "rgba(255, 255, 255, 0)");
+    ctx.fillStyle = streak;
+    ctx.fillRect(0, 0, width, height);
+    ctx.restore();
   }
 }
 
@@ -110,6 +195,7 @@ export async function renderFilteredShot(
   const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
   applyFilterToData(id, frame.data);
   ctx.putImageData(frame, 0, 0);
+  applySpatialFilter(ctx, canvas.width, canvas.height, id);
 
   return canvas.toDataURL("image/jpeg", 0.92);
 }

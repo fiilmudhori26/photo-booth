@@ -1,4 +1,12 @@
-export type FilterId = "normal" | "bw" | "vintage" | "pink" | "contrast";
+export type FilterId =
+  | "normal"
+  | "bw"
+  | "vintage"
+  | "pink"
+  | "contrast"
+  | "sepia"
+  | "grain"
+  | "lightleak";
 
 export type FrameId =
   | "pink"
