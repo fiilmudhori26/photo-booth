@@ -368,7 +368,8 @@ export function hitTestSticker(
     const unit = sticker.size * STRIP_W;
     const dx = x - sticker.x * STRIP_W;
     const dy = y - sticker.y * stripH;
-    if (Math.abs(dx) <= unit * 0.62 && Math.abs(dy) <= unit * 0.62) {
+    const radius = Math.max(unit * 0.85, 60);
+    if (Math.abs(dx) <= radius && Math.abs(dy) <= radius) {
       return sticker;
     }
   }
