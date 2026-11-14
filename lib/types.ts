@@ -23,9 +23,21 @@ export type FrameId =
   | "retro"
   | "korean"
   | "bubblegum"
-  | "mocha";
+  | "mocha"
+  | "y2k"
+  | "chrome"
+  | "japandi"
+  | "serif"
+  | "street"
+  | "botanic";
 
-export type PatternId = "none" | "dots" | "hearts" | "stripes" | "checker";
+export type PatternId =
+  | "none"
+  | "dots"
+  | "hearts"
+  | "stripes"
+  | "checker"
+  | "grid";
 
 export type ExportFormat = "png" | "jpg";
 

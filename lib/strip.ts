@@ -122,6 +122,21 @@ function drawPattern(
         if ((row + col) % 2 === 0) ctx.fillRect(x, y, s, s);
       }
     }
+  } else if (id === "grid") {
+    ctx.lineWidth = 1.5;
+    const tile = 38;
+    for (let x = 0; x <= w; x += tile) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, h);
+      ctx.stroke();
+    }
+    for (let y = 0; y <= h; y += tile) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
+    }
   }
 
   ctx.restore();
