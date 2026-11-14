@@ -54,13 +54,21 @@ function click(delay: number, duration: number, volume: number) {
 }
 
 /** Tiny synthesised sound effects — no audio assets required. */
+export function vibrate(pattern: number | number[] = 30): void {
+  if (typeof navigator === "undefined") return;
+  if (typeof navigator.vibrate !== "function") return;
+  navigator.vibrate(pattern);
+}
+
 export const sfx = {
   tick(count: number) {
     tone(count <= 1 ? 1180 : 880, 0, 0.13, "triangle", 0.1);
   },
   shutter() {
-    click(0, 0.085, 0.3);
-    tone(190, 0, 0.06, "square", 0.07);
+    click(0, 0.12, 0.45);
+    click(0.035, 0.06, 0.28);
+    tone(190, 0, 0.09, "square", 0.12);
+    tone(72, 0, 0.14, "sine", 0.16);
   },
   pop() {
     tone(680, 0, 0.08, "sine", 0.09);

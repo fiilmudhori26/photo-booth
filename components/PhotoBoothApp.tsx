@@ -19,7 +19,7 @@ import {
   formatStamp,
   renderStripToDataUrl,
 } from "@/lib/export";
-import { sfx } from "@/lib/sound";
+import { sfx, vibrate } from "@/lib/sound";
 import { MAX_STICKERS, PAD_DEFAULT } from "@/lib/strip";
 import { useCamera } from "@/lib/useCamera";
 import type {
@@ -153,6 +153,7 @@ export default function PhotoBoothApp() {
         if (!aliveRef.current) return;
         setCountdown(tick);
         play("tick", tick);
+        if (soundRef.current) vibrate(15);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
 
@@ -160,6 +161,7 @@ export default function PhotoBoothApp() {
       setCountdown(null);
       setFlash(true);
       play("shutter");
+      if (soundRef.current) vibrate([40, 60, 40]);
 
       const frame = camera.captureFrame(mirror);
       await new Promise((resolve) => setTimeout(resolve, 130));
