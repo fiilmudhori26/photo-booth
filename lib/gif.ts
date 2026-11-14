@@ -29,7 +29,7 @@ export async function renderStripGif(opts: StripGifOptions): Promise<string> {
   const perPose = opts.grabs.map((pose) => pose.filter(Boolean));
   const framesPerPose = Math.min(...perPose.map((pose) => pose.length));
   if (!framesPerPose || !perPose.length) {
-    throw new Error("No GIF grabs recorded — this strip was not captured with the camera.");
+    throw new Error("Belum ada rekaman GIF — strip ini tidak dipotret dengan kamera.");
   }
 
   const images = await Promise.all(
@@ -49,7 +49,7 @@ export async function renderStripGif(opts: StripGifOptions): Promise<string> {
   canvas.width = width;
   canvas.height = canvasHeight;
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Canvas is not available in this browser.");
+  if (!ctx) throw new Error("Canvas tidak tersedia di browser ini.");
 
   const encoder = GIFEncoder();
   const forward = [...Array(framesPerPose).keys()];

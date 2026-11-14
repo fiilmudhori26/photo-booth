@@ -166,7 +166,7 @@ export default function StripCanvas({
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         style={{ touchAction: "none" }}
-        aria-label="Photo strip preview. Drag stickers to reposition them."
+        aria-label="Pratinjau strip foto. Seret stiker untuk memindahkannya."
         className={[
           "mx-auto block h-auto w-auto max-h-[64vh] max-w-full rounded-[1.75rem]",
           "shadow-[0_30px_60px_-30px_rgba(140,80,120,0.75)] ring-4 ring-white/80",

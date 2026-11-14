@@ -34,7 +34,7 @@ export default function UploadStage({ onBack, onComplete, photoCount = 3 }: Uplo
 
     const files = Array.from(list).filter(isImageFile);
     if (!files.length) {
-      setError("That file is not a photo — pick a PNG, JPG or WEBP.");
+      setError("Itu bukan foto — pilih file PNG, JPG, atau WEBP.");
       return;
     }
 
@@ -55,7 +55,7 @@ export default function UploadStage({ onBack, onComplete, photoCount = 3 }: Uplo
       try {
         next[index] = await fileToShot(files[i]);
       } catch {
-        setError("Hmm, one of those photos could not be read.");
+        setError("Hmm, salah satu foto itu gagal dibaca.");
       }
     }
 
@@ -70,9 +70,9 @@ export default function UploadStage({ onBack, onComplete, photoCount = 3 }: Uplo
 
   return (
     <Panel
-      title="Upload from gallery"
+      title="Upload dari Galeri"
       icon="🖼️"
-      hint={`${shots.length}/${photoCount} chosen`}
+      hint={`${shots.length}/${photoCount} dipilih`}
       className="mx-auto max-w-3xl"
     >
       <input
@@ -88,8 +88,7 @@ export default function UploadStage({ onBack, onComplete, photoCount = 3 }: Uplo
       />
 
       <p className="font-hand text-base leading-snug text-inksoft">
-        Pick {photoCount} photos from your camera roll, screenshots — anything. Tap a slot
-        again any time to swap that photo out.
+        Pilih {photoCount} foto dari galeri, tangkapan layar — apa pun. Ketuk slot lagi kapan pun untuk mengganti fotonya.
       </p>
 
       <div
@@ -101,7 +100,7 @@ export default function UploadStage({ onBack, onComplete, photoCount = 3 }: Uplo
             <button
               type="button"
               onClick={() => pick(index)}
-              aria-label={slot ? `Replace photo ${index + 1}` : `Add photo ${index + 1}`}
+              aria-label={slot ? `Ganti foto ${index + 1}` : `Tambah foto ${index + 1}`}
               className={cx(
                 "flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl border-[3px] transition active:translate-y-[2px]",
                 slot
@@ -112,13 +111,13 @@ export default function UploadStage({ onBack, onComplete, photoCount = 3 }: Uplo
               {slot ? (
                 <img
                   src={slot}
-                  alt={`Chosen photo ${index + 1}`}
+                  alt={`Foto pilihan ${index + 1}`}
                   className="size-full object-cover"
                 />
               ) : (
                 <span className="flex flex-col items-center gap-1 text-inksoft">
                   <CirclePlus className="size-6" />
-                  <span className="text-[0.6875rem] font-bold">Photo {index + 1}</span>
+                  <span className="text-[0.6875rem] font-bold">Foto {index + 1}</span>
                 </span>
               )}
             </button>
@@ -127,7 +126,7 @@ export default function UploadStage({ onBack, onComplete, photoCount = 3 }: Uplo
               <button
                 type="button"
                 onClick={() => clearSlot(index)}
-                aria-label={`Remove photo ${index + 1}`}
+                aria-label={`Hapus foto ${index + 1}`}
                 className="absolute right-1.5 top-1.5 inline-flex size-8 items-center justify-center rounded-full border-2 border-white bg-white/90 text-rose shadow transition hover:bg-blush"
               >
                 <Trash className="size-3.5" />
@@ -161,19 +160,19 @@ export default function UploadStage({ onBack, onComplete, photoCount = 3 }: Uplo
           }
         >
           {busy
-            ? "Loading photos…"
+            ? "Memuat foto…"
             : missing > 0
-              ? `Choose ${missing} more photo${missing > 1 ? "s" : ""}`
-              : "Decorate my strip"}
+              ? `Pilih ${missing} foto lagi`
+              : "Hias strip aku"}
         </KawaiiButton>
 
         <KawaiiButton block onClick={onBack} icon={<ArrowLeft className="size-5" />}>
-          Back
+          Kembali
         </KawaiiButton>
       </div>
 
       <p className="mt-4 font-hand text-sm leading-snug text-inksoft">
-        Photos are processed right here in your browser — nothing is uploaded.
+        Foto diproses langsung di browser kamu — tidak diunggah ke mana-mana.
       </p>
     </Panel>
   );

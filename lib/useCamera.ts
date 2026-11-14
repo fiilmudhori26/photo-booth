@@ -10,17 +10,17 @@ function describeError(err: unknown): string {
   switch (e?.name) {
     case "NotAllowedError":
     case "SecurityError":
-      return "Camera access is blocked. Allow the camera in your browser's address bar, then try again.";
+      return "Akses kamera diblokir. Izinkan kamera lewat ikon kunci di address bar browsermu, lalu coba lagi.";
     case "NotFoundError":
     case "DevicesNotFoundError":
-      return "No camera found on this device. Connect one, or try on a phone instead.";
+      return "Tidak ada kamera yang ditemukan di perangkat ini. Sambungkan kamera dulu, atau coba lewat ponsel.";
     case "NotReadableError":
     case "TrackStartError":
-      return "Your camera is already in use by another app. Close it and tap Retry.";
+      return "Kameramu lagi dipakai aplikasi lain. Tutup dulu aplikasinya, lalu ketuk Coba lagi.";
     case "OverconstrainedError":
-      return "That camera cannot be opened at this resolution. Try another camera.";
+      return "Kamera ini tidak bisa dibuka dengan resolusi segitu. Coba kamera lainnya.";
     default:
-      return e?.message || "Something went wrong while starting the camera.";
+      return "Ada yang salah saat menyalakan kamera. Coba lagi, atau periksa izin kamera di browsermu.";
   }
 }
 

@@ -10,7 +10,7 @@ function decode(file: File): Promise<HTMLImageElement> {
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error("Could not read that image"));
+      reject(new Error("Gambar tidak bisa dibaca"));
     };
     img.src = url;
   });
@@ -29,7 +29,7 @@ export async function fileToShot(file: File): Promise<string> {
   canvas.width = CAPTURE_W;
   canvas.height = CAPTURE_H;
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Canvas is unavailable");
+  if (!ctx) throw new Error("Canvas tidak tersedia");
 
   const scale = Math.max(CAPTURE_W / sw, CAPTURE_H / sh);
   const dw = sw * scale;

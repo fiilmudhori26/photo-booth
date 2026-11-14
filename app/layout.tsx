@@ -11,7 +11,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "my dipaaa💕",
   description:
-    "A cute and kawaii web photo booth — snap three poses, decorate your strip and download it in high resolution.",
+    "Photo booth kawaii di ponsel kamu — jepret 3 pose, hias strip kamu, langsung unduh.",
 };
 
 export const viewport: Viewport = {
@@ -24,7 +24,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="id">
       <body className="font-body antialiased">{children}</body>
     </html>
   );

@@ -86,9 +86,9 @@ export default function CameraStage({
         {status === "requesting" && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/75 backdrop-blur-sm">
             <LoaderCircle className="size-10 animate-spin text-rose" />
-            <p className="font-display text-lg text-ink">Waking up the camera…</p>
+            <p className="font-display text-lg text-ink">Kamera lagi bangun…</p>
             <p className="font-hand text-base text-inksoft">
-              say cheese in a second 🌸
+              ucapkan cheese sebentar lagi 🌸
             </p>
           </div>
         )}
@@ -96,14 +96,14 @@ export default function CameraStage({
         {status === "error" && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-blush to-lilac px-6 text-center">
             <CameraOff className="size-10 text-rose" />
-            <p className="font-display text-lg text-ink">Camera said no 🙈</p>
+            <p className="font-display text-lg text-ink">Kamera menolak 🙈</p>
             <p className="max-w-sm text-sm leading-relaxed text-ink/80">{errorMessage}</p>
             <KawaiiButton
               variant="primary"
               icon={<RefreshCw className="size-4" />}
               onClick={onRetry}
             >
-              Try again
+              Coba lagi
             </KawaiiButton>
           </div>
         )}
@@ -115,7 +115,7 @@ export default function CameraStage({
                 key={`pose-${poseIndex}`}
                 className="anim-pop inline-flex items-center gap-2 rounded-full border-2 border-white bg-rose/90 px-4 py-1.5 font-display text-sm text-white shadow-lg"
               >
-                💗 Pose {poseIndex + 1} of {poseCount}
+                💗 Pose {poseIndex + 1} dari {poseCount}
               </span>
             </div>
 
@@ -146,7 +146,7 @@ export default function CameraStage({
             )}
           >
             <ArrowLeftRight className="size-4" />
-            Mirror
+            Cermin
           </button>
 
           {deviceCount > 1 && (
@@ -156,14 +156,14 @@ export default function CameraStage({
               className="inline-flex min-h-11 max-w-[13rem] items-center gap-2 rounded-full border-2 border-white bg-white/85 px-3 text-xs font-bold text-ink shadow-lg backdrop-blur transition hover:bg-white active:translate-y-[2px]"
             >
               <SwitchCamera className="size-4 shrink-0" />
-              <span className="truncate">{deviceLabel || "Switch camera"}</span>
+              <span className="truncate">{deviceLabel || "Ganti kamera"}</span>
             </button>
           )}
         </div>
 
         {/* capture progress hearts */}
         <div className="absolute bottom-4 right-4 flex items-center gap-1 rounded-full border-2 border-white bg-white/80 px-3 py-1.5 shadow-lg backdrop-blur">
-          {[0, 1, 2].map((index) => (
+          {Array.from({ length: poseCount }, (_, index) => (
             <span
               key={index}
               className={cx(

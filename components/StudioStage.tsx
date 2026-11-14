@@ -31,9 +31,9 @@ import { Chip, KawaiiButton, Panel, cx } from "./ui";
 type Tab = "filters" | "frame" | "stickers";
 
 const TABS: { id: Tab; label: string; icon: typeof Sparkles }[] = [
-  { id: "filters", label: "Filters", icon: WandSparkles },
-  { id: "frame", label: "Frame", icon: Palette },
-  { id: "stickers", label: "Stickers", icon: StickerIcon },
+  { id: "filters", label: "Filter", icon: WandSparkles },
+  { id: "frame", label: "Bingkai", icon: Palette },
+  { id: "stickers", label: "Stiker", icon: StickerIcon },
 ];
 
 interface StudioStageProps {
@@ -126,9 +126,9 @@ export default function StudioStage(props: StudioStageProps) {
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-start">
       {/* ── Preview ─────────────────────────────────────────── */}
       <Panel
-        title="Your Photo Strip"
+        title="Strip Foto Kamu"
         icon="📸"
-        hint="drag stickers to move them"
+        hint="seret stiker untuk memindahkan"
         className="lg:sticky lg:top-6"
       >
         <div className="kawaii-inset relative px-4 py-6 sm:px-8">
@@ -166,7 +166,7 @@ export default function StudioStage(props: StudioStageProps) {
             <div className="absolute inset-0 flex items-center justify-center rounded-[1.5rem] bg-white/70 backdrop-blur-sm">
               <span className="inline-flex items-center gap-2 rounded-full border-2 border-white bg-white/90 px-4 py-2 text-sm font-bold text-ink shadow-lg">
                 <LoaderCircle className="size-4 animate-spin text-rose" />
-                Mixing pastel magic…
+                Mencampur keajaiban pastel…
               </span>
             </div>
           )}
@@ -174,7 +174,7 @@ export default function StudioStage(props: StudioStageProps) {
 
         <p className="mt-3 flex items-center justify-center gap-2 font-hand text-base text-inksoft">
           <MousePointerClick className="size-4" />
-          Tap a sticker on the strip to edit it
+          Ketuk stiker di strip untuk mengubahnya
         </p>
 
         <div className="mt-5 grid gap-3 sm:grid-cols-3">
@@ -191,7 +191,7 @@ export default function StudioStage(props: StudioStageProps) {
               )
             }
           >
-            {exporting ? "Saving…" : "Download Strip"}
+            {exporting ? "Menyimpan…" : "Unduh Strip"}
           </KawaiiButton>
           <KawaiiButton
             block
@@ -205,14 +205,14 @@ export default function StudioStage(props: StudioStageProps) {
               )
             }
           >
-            {sharing ? "Sharing…" : "Share Strip"}
+            {sharing ? "Membagikan…" : "Bagikan Strip"}
           </KawaiiButton>
           <KawaiiButton
             block
             onClick={onRetake}
             icon={<RefreshCw className="size-5" />}
           >
-            Retake Photos
+            Ulangi Foto
           </KawaiiButton>
         </div>
 
@@ -229,11 +229,11 @@ export default function StudioStage(props: StudioStageProps) {
               )
             }
           >
-            {gifBusy ? "Making GIF…" : "Save / Share as GIF"}
+            {gifBusy ? "Membuat GIF…" : "Simpan / Bagikan sebagai GIF"}
           </KawaiiButton>
           {!gifAvailable && (
             <p className="text-center font-hand text-sm text-inksoft">
-              GIF works after a camera shoot — this strip came from the gallery.
+              GIF cuma bisa setelah jepret pakai kamera — strip ini dari galeri.
             </p>
           )}
         </div>
@@ -241,7 +241,7 @@ export default function StudioStage(props: StudioStageProps) {
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-inksoft">
           <span className="inline-flex items-center gap-1.5">
             <ImageIcon className="size-4" />
-            Exports at 1440 px wide
+            Lebar ekspor 1440 px
           </span>
           <div className="inline-flex items-center gap-1 rounded-full border-2 border-white bg-white/70 p-1">
             {(["png", "jpg"] as ExportFormat[]).map((value) => (
@@ -286,7 +286,7 @@ export default function StudioStage(props: StudioStageProps) {
 
         {tab === "filters" && (
           <div className="space-y-3">
-            <h3 className="font-display text-base text-ink">Photo Filters</h3>
+            <h3 className="font-display text-base text-ink">Filter Foto</h3>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {FILTER_PRESETS.map((preset) => (
                 <button
@@ -312,7 +312,7 @@ export default function StudioStage(props: StudioStageProps) {
         {tab === "frame" && (
           <div className="space-y-5">
             <div>
-              <h3 className="mb-3 font-display text-base text-ink">Frame Colour</h3>
+              <h3 className="mb-3 font-display text-base text-ink">Warna Bingkai</h3>
               <div className="grid grid-cols-3 gap-2">
                 {FRAMES.map((frame) => (
                   <button
@@ -341,7 +341,7 @@ export default function StudioStage(props: StudioStageProps) {
             </div>
 
             <div>
-              <h3 className="mb-3 font-display text-base text-ink">Pattern</h3>
+              <h3 className="mb-3 font-display text-base text-ink">Pola</h3>
               <div className="flex flex-wrap gap-2">
                 {PATTERNS.map((item) => (
                   <Chip
@@ -358,7 +358,7 @@ export default function StudioStage(props: StudioStageProps) {
 
             <div>
               <div className="mb-2 flex items-center justify-between">
-                <h3 className="font-display text-base text-ink">Frame Margin</h3>
+                <h3 className="font-display text-base text-ink">Margin Bingkai</h3>
                 <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-inksoft">
                   {pad} px
                 </span>
@@ -371,12 +371,12 @@ export default function StudioStage(props: StudioStageProps) {
                 step={PAD_STEP}
                 value={pad}
                 onChange={(event) => onPad(Number(event.target.value))}
-                aria-label="Frame margin"
+                aria-label="Margin bingkai"
               />
             </div>
 
             <div>
-              <h3 className="mb-2 font-display text-base text-ink">Strip Caption</h3>
+              <h3 className="mb-2 font-display text-base text-ink">Caption Strip</h3>
               <input
                 value={caption}
                 onChange={(event) => onCaption(event.target.value.slice(0, 22))}
@@ -384,20 +384,20 @@ export default function StudioStage(props: StudioStageProps) {
                 className="w-full rounded-2xl border-[3px] border-white bg-white/80 px-4 py-3 text-sm font-bold text-ink outline-none transition placeholder:font-normal placeholder:text-inksoft/70 focus:border-petal"
               />
               <p className="mt-1.5 font-hand text-sm text-inksoft">
-                {22 - caption.length} characters left
+                {22 - caption.length} karakter tersisa
               </p>
             </div>
 
             <div>
-              <h3 className="mb-2 font-display text-base text-ink">Event Text</h3>
+              <h3 className="mb-2 font-display text-base text-ink">Teks Acara</h3>
               <input
                 value={eventText}
                 onChange={(event) => onEventText(event.target.value.slice(0, 22))}
-                placeholder="Rani & Andre — Wedding 2026"
+                placeholder="Rani & Andre — Pernikahan 2026"
                 className="w-full rounded-2xl border-[3px] border-white bg-white/80 px-4 py-3 text-sm font-bold text-ink outline-none transition placeholder:font-normal placeholder:text-inksoft/70 focus:border-petal"
               />
               <p className="mt-1.5 font-hand text-sm text-inksoft">
-                Shown on the strip footer — optional
+                Tampil di bagian bawah strip — opsional
               </p>
             </div>
           </div>
@@ -406,7 +406,7 @@ export default function StudioStage(props: StudioStageProps) {
         {tab === "stickers" && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-display text-base text-ink">Sticker Picker</h3>
+              <h3 className="font-display text-base text-ink">Pilih Stiker</h3>
               <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-inksoft">
                 {stickers.length}/{MAX_STICKERS}
               </span>
@@ -418,7 +418,7 @@ export default function StudioStage(props: StudioStageProps) {
                   key={preset.emoji}
                   type="button"
                   title={preset.label}
-                  aria-label={`Add ${preset.label} sticker`}
+                  aria-label={`Tambah stiker ${preset.label}`}
                   disabled={full}
                   onClick={() => onAddSticker(preset.emoji)}
                   className="flex aspect-square items-center justify-center rounded-2xl border-[3px] border-white bg-white/70 text-xl transition hover:-translate-y-0.5 hover:bg-white active:translate-y-0 disabled:opacity-40"
@@ -435,7 +435,7 @@ export default function StudioStage(props: StudioStageProps) {
               onClick={onAddDateSticker}
               icon={<Calendar className="size-5" />}
             >
-              Add date stamp
+              Tambah stempel tanggal
             </KawaiiButton>
 
             {selected ? (
@@ -445,13 +445,13 @@ export default function StudioStage(props: StudioStageProps) {
                     {selected.kind === "date" ? "📅" : selected.emoji}
                   </span>
                   <span className="font-display text-sm text-ink">
-                    {selected.kind === "date" ? "Date stamp" : "Sticker"}
+                    {selected.kind === "date" ? "Stempel tanggal" : "Stiker"}
                   </span>
                   <button
                     type="button"
                     onClick={() => onRemoveSticker(selected.uid)}
                     className="ml-auto inline-flex size-11 items-center justify-center rounded-full border-2 border-white bg-white/80 text-rose transition hover:bg-blush"
-                    aria-label="Delete sticker"
+                    aria-label="Hapus stiker"
                   >
                     <Trash className="size-4" />
                   </button>
@@ -460,7 +460,7 @@ export default function StudioStage(props: StudioStageProps) {
                 <label className="block">
                   <span className="mb-2 flex items-center justify-between text-xs font-bold text-inksoft">
                     <span className="inline-flex items-center gap-1">
-                      <ZoomIn className="size-3.5" /> Size
+                      <ZoomIn className="size-3.5" /> Ukuran
                     </span>
                     <span>{Math.round(selected.size * 100)}%</span>
                   </span>
@@ -474,7 +474,7 @@ export default function StudioStage(props: StudioStageProps) {
                     onChange={(event) =>
                       onUpdateSticker(selected.uid, { size: Number(event.target.value) })
                     }
-                    aria-label="Sticker size"
+                    aria-label="Ukuran stiker"
                   />
                 </label>
 
@@ -487,7 +487,7 @@ export default function StudioStage(props: StudioStageProps) {
                     }
                     icon={<Redo2 className="size-4 -scale-x-100" />}
                   >
-                    Rotate
+                    Putar
                   </KawaiiButton>
                   <KawaiiButton
                     small
@@ -497,20 +497,20 @@ export default function StudioStage(props: StudioStageProps) {
                     }
                     icon={<Redo2 className="size-4" />}
                   >
-                    Rotate
+                    Putar
                   </KawaiiButton>
                   <KawaiiButton
                     small
                     onClick={() => onUpdateSticker(selected.uid, { rotation: 0 })}
                     icon={<RotateCcw className="size-4" />}
                   >
-                    Level
+                    Lurus
                   </KawaiiButton>
                 </div>
               </div>
             ) : (
               <p className="kawaii-inset px-4 py-3 font-hand text-base text-inksoft">
-                Pick a sticker above, then drag it anywhere on the strip 💫
+                Pilih stiker di atas, lalu seret ke mana pun di strip 💫
               </p>
             )}
 
@@ -523,7 +523,7 @@ export default function StudioStage(props: StudioStageProps) {
                 }}
                 icon={<Eraser className="size-5" />}
               >
-                Clear all stickers
+                Hapus semua stiker
               </KawaiiButton>
             )}
           </div>
@@ -536,7 +536,7 @@ export default function StudioStage(props: StudioStageProps) {
             onClick={onStartOver}
             icon={<RefreshCw className="size-4" />}
           >
-            Start a brand new session
+            Mulai sesi baru dari awal
           </KawaiiButton>
         </div>
       </Panel>

@@ -8,14 +8,14 @@ export interface FilterPreset {
 }
 
 export const FILTER_PRESETS: FilterPreset[] = [
-  { id: "normal", label: "Soft Normal", icon: "🌸", hint: "True to life" },
-  { id: "bw", label: "Classic Mono", icon: "🎞️", hint: "Timeless B&W" },
-  { id: "vintage", label: "Vintage Warm", icon: "🍮", hint: "Faded & toasty" },
-  { id: "pink", label: "Pastel Bloom", icon: "🧁", hint: "Dreamy pink glow" },
-  { id: "contrast", label: "Punchy Pop", icon: "🍬", hint: "High contrast" },
-  { id: "sepia", label: "Sepia Nostalgia", icon: "📜", hint: "Old-time warm paper" },
-  { id: "grain", label: "Film Grain", icon: "📼", hint: "35mm texture" },
-  { id: "lightleak", label: "Light Leak", icon: "🌅", hint: "Soft sunburn glow" },
+  { id: "normal", label: "Soft Normal", icon: "🌸", hint: "Seperti aslinya" },
+  { id: "bw", label: "Classic Mono", icon: "🎞️", hint: "Hitam putih abadi" },
+  { id: "vintage", label: "Vintage Warm", icon: "🍮", hint: "Pudar & hangat" },
+  { id: "pink", label: "Pastel Bloom", icon: "🧁", hint: "Pink yang dreamy" },
+  { id: "contrast", label: "Punchy Pop", icon: "🍬", hint: "Kontras tinggi" },
+  { id: "sepia", label: "Sepia Nostalgia", icon: "📜", hint: "Kertas tua hangat" },
+  { id: "grain", label: "Film Grain", icon: "📼", hint: "Tekstur 35mm" },
+  { id: "lightleak", label: "Light Leak", icon: "🌅", hint: "Cahaya senja yang hangat" },
 ];
 
 const clamp255 = (v: number) => (v < 0 ? 0 : v > 255 ? 255 : v);
@@ -172,7 +172,7 @@ export function loadImage(src: string): Promise<HTMLImageElement> {
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("Could not decode image"));
+    img.onerror = () => reject(new Error("Gambar tidak bisa diproses"));
     img.src = src;
   });
 }

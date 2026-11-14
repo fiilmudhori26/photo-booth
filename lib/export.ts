@@ -7,7 +7,7 @@ export const EXPORT_SCALE = 2;
 
 export function formatStamp(date: Date): string {
   return date
-    .toLocaleDateString("en-GB", {
+    .toLocaleDateString("id-ID", {
       day: "2-digit",
       month: "short",
       year: "numeric",
@@ -41,7 +41,7 @@ export async function renderStripToDataUrl(
   canvas.height = Math.round(height * EXPORT_SCALE);
 
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Canvas is not available in this browser.");
+  if (!ctx) throw new Error("Canvas tidak tersedia di browser ini.");
 
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";

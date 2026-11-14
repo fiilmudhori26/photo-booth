@@ -49,7 +49,7 @@ const DECOR: { emoji: string; className: string; delay: string }[] = [
   { emoji: "🫧", className: "right-[30%] bottom-[8%]", delay: "0.3s" },
 ];
 
-const STEPS = ["Photos", "Snap poses", "Decorate"];
+const STEPS = ["Foto", "Jepret pose", "Hias strip"];
 
 function stepIndex(stage: Stage) {
   if (stage === "capturing") return 1;
@@ -292,9 +292,9 @@ export default function PhotoBoothApp() {
         `my-dipaaa-${fileStamp(sessionDate)}.${format}`,
       );
       play("success");
-      setNotice("Saved to your device — kawaii! 💖");
+      setNotice("Tersimpan di perangkat kamu — kawaii! 💖");
     } catch {
-      setNotice("Hmm, the strip could not be saved. Please try again.");
+      setNotice("Hmm, stripnya gagal disimpan. Coba lagi, ya.");
     } finally {
       setExporting(false);
     }
@@ -320,16 +320,16 @@ export default function PhotoBoothApp() {
       );
       const result = await shareImage(dataUrl, {
         title: "my dipaaa",
-        text: "My photo strip 💖",
+        text: "Strip foto aku 💖",
         format,
       });
       setNotice(
         result === "shared"
-          ? "Shared — kawaii! 💌"
-          : "Saved to your device — kawaii! 💖",
+          ? "Terkirim — kawaii! 💌"
+          : "Tersimpan di perangkat kamu — kawaii! 💖",
       );
     } catch {
-      setNotice("Hmm, the strip could not be shared. Please try again.");
+      setNotice("Hmm, stripnya gagal dibagikan. Coba lagi, ya.");
     } finally {
       setSharing(false);
     }
@@ -338,7 +338,7 @@ export default function PhotoBoothApp() {
   const handleGif = async () => {
     if (!processed.length || gifBusy || exporting) return;
     if (!isCameraSession || !gifGrabsRef.current.some((grabs) => grabs.length)) {
-      setNotice("GIF works after a camera shoot — this strip came from the gallery.");
+      setNotice("GIF cuma bisa setelah jepret pakai kamera — strip ini dari galeri.");
       return;
     }
     setGifBusy(true);
@@ -361,16 +361,16 @@ export default function PhotoBoothApp() {
       });
       const result = await shareImage(dataUrl, {
         title: "my dipaaa",
-        text: "My animated photo strip 💖",
+        text: "Strip foto animasi aku 💖",
         format: "gif",
       });
       setNotice(
         result === "shared"
-          ? "GIF shared — kawaii! 💌"
-          : "GIF saved to your device — kawaii! 💖",
+          ? "GIF terkirim — kawaii! 💌"
+          : "GIF tersimpan di perangkat kamu — kawaii! 💖",
       );
     } catch {
-      setNotice("Hmm, the GIF could not be created. Try the plain strip instead.");
+      setNotice("Hmm, GIF-nya gagal dibuat. Coba strip biasa aja.");
     } finally {
       setGifBusy(false);
     }
@@ -426,7 +426,7 @@ export default function PhotoBoothApp() {
               my dipaaa💕
             </h1>
             <p className="font-hand text-sm text-inksoft sm:text-base">
-              snap {photoCount} cute poses · decorate · download
+              jepret {photoCount} pose lucu · hias · unduh
             </p>
           </div>
         </div>
@@ -443,7 +443,7 @@ export default function PhotoBoothApp() {
           )}
         >
           {soundOn ? <Volume2 className="size-4" /> : <VolumeX className="size-4" />}
-          {soundOn ? "Sound on" : "Muted"}
+          {soundOn ? "Suara nyala" : "Senyap"}
         </button>
       </header>
 
@@ -492,19 +492,19 @@ export default function PhotoBoothApp() {
               <span>✨</span>
             </div>
             <h2 className="font-display text-2xl leading-tight text-ink sm:text-3xl">
-              Welcome to the cutest little photo booth
+              Selamat datang di photo booth paling imut
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-ink/80 sm:text-base">
-              Allow your camera and snap {photoCount} photos with a countdown — or
-              upload photos from your gallery instead. Then dress up your strip with
-              pastel filters, frames and stickers. Everything stays on your device.
+              Izinkan akses kamera, lalu jepret {photoCount} foto dengan hitung mundur —
+              atau upload foto dari galeri kamu. Setelah itu hias stripnya dengan
+              filter pastel, bingkai, dan stiker. Semuanya tetap di perangkat kamu.
             </p>
 
             <div className="mt-7 grid gap-3 sm:grid-cols-3">
               {[
-                { icon: <Camera className="size-5" />, title: `${photoCount} photos`, text: "Countdown, flash and cute pose prompts." },
-                { icon: <WandSparkles className="size-5" />, title: "8 filters", text: "Pastel bloom, vintage warm, mono and more." },
-                { icon: <Sparkles className="size-5" />, title: "Stickers", text: "Frames, patterns, hearts and date stamps." },
+                { icon: <Camera className="size-5" />, title: `${photoCount} foto`, text: "Hitung mundur, flash, dan arahan pose yang lucu." },
+                { icon: <WandSparkles className="size-5" />, title: "8 filter", text: "Pastel bloom, vintage hangat, mono, dan lainnya." },
+                { icon: <Sparkles className="size-5" />, title: "Stiker", text: "Bingkai, pola, hati, dan stempel tanggal." },
               ].map((item) => (
                 <div key={item.title} className="kawaii-inset px-4 py-5">
                   <span className="mx-auto mb-2 grid size-10 place-items-center rounded-2xl border-2 border-white bg-gradient-to-br from-bubble to-lilac text-ink">
@@ -519,10 +519,10 @@ export default function PhotoBoothApp() {
             </div>
 
             <div className="mt-6">
-              <p className="font-display text-base text-ink">Photos per strip</p>
+              <p className="font-display text-base text-ink">Jumlah foto per strip</p>
               <div
                 role="radiogroup"
-                aria-label="Photos per strip"
+                aria-label="Jumlah foto per strip"
                 className="mt-2 inline-flex flex-wrap items-center gap-2"
               >
                 {PHOTO_COUNTS.map((count) => (
@@ -554,7 +554,7 @@ export default function PhotoBoothApp() {
                   setStage("camera");
                 }}
               >
-                Start Photo Booth
+                Mulai Photo Booth
               </KawaiiButton>
               <KawaiiButton
                 icon={<ImageUp className="size-5" />}
@@ -563,13 +563,13 @@ export default function PhotoBoothApp() {
                   setStage("upload");
                 }}
               >
-                Upload from Gallery
+                Upload dari Galeri
               </KawaiiButton>
             </div>
 
             <div className="mt-4 flex justify-center">
               <StatPill icon={<Heart className="size-3.5" />}>
-                Nothing is uploaded anywhere
+                Foto kamu tidak diunggah ke mana pun
               </StatPill>
             </div>
           </Panel>
@@ -597,28 +597,28 @@ export default function PhotoBoothApp() {
 
             <Panel className="lg:sticky lg:top-6">
               <h2 className="font-display text-xl leading-tight text-ink">
-                {capturing ? "Say cheeeese!" : "Ready when you are"}
+                {capturing ? "Ucapkan cheeeeese!" : "Siap kapan pun kamu mau"}
               </h2>
               <p className="mt-2 font-hand text-base leading-snug text-inksoft">
                 {capturing
-                  ? `Pose ${poseIndex + 1} of ${photoCount} — hold that smile, the flash is coming.`
-                  : `${photoCount} photos with a 3-2-1 countdown, then it is decorating time.`}
+                  ? `Pose ${poseIndex + 1} dari ${photoCount} — tahan senyummu, flashnya sebentar lagi.`
+                  : `${photoCount} foto dengan hitung mundur 3-2-1, lalu waktunya menghias strip.`}
               </p>
 
               <div className="mt-4 flex flex-wrap gap-2">
                 <StatPill icon={<Camera className="size-3.5" />}>
-                  {camera.status === "ready" ? "Camera live" : "Camera idle"}
+                  {camera.status === "ready" ? "Kamera aktif" : "Kamera belum aktif"}
                 </StatPill>
                 <StatPill icon={<Heart className="size-3.5" />}>
-                  {capturedCount}/{photoCount} snapped
+                  {capturedCount}/{photoCount} terjepret
                 </StatPill>
               </div>
 
               <ol className="mt-5 space-y-2.5">
                 {[
-                  "Sit close — the booth frames a 4:3 shot.",
-                  "Look at the lens, not the screen, for the sparkle.",
-                  "Tilt your head and add a prop for extra cuteness.",
+                  "Duduk agak dekat — booth ini membingkai foto 4:3.",
+                  "Lihat ke lensa, bukan layar, supaya matamu berkilau.",
+                  "Miringkan kepalamu dan tambahkan properti biar makin imut.",
                 ].map((tip) => (
                   <li key={tip} className="flex gap-2 text-sm leading-snug text-ink/80">
                     <span className="mt-0.5 text-petal">💗</span>
@@ -635,7 +635,7 @@ export default function PhotoBoothApp() {
                   onClick={() => void runSequence()}
                   icon={<Sparkles className="size-5" />}
                 >
-                  {capturing ? "Capturing…" : "Start Photo Booth"}
+                  {capturing ? "Lagi memotret…" : "Mulai Photo Booth"}
                 </KawaiiButton>
 
                 {stage === "camera" && (
@@ -645,18 +645,18 @@ export default function PhotoBoothApp() {
                       onClick={() => setStage("upload")}
                       icon={<ImageUp className="size-5" />}
                     >
-                      Upload from gallery
+                      Upload dari galeri
                     </KawaiiButton>
                     <KawaiiButton block onClick={() => setStage("intro")}>
-                      Back
+                      Kembali
                     </KawaiiButton>
                   </>
                 )}
               </div>
 
               <p className="mt-4 font-hand text-sm leading-snug text-inksoft">
-                Tip: filters, frames and stickers are applied after the shoot, so
-                you can change your mind as many times as you like.
+                Tip: filter, bingkai, dan stiker baru diterapkan setelah jepret,
+                jadi kamu bisa berubah pikiran berkali-kali.
               </p>
             </Panel>
           </div>
@@ -727,7 +727,7 @@ export default function PhotoBoothApp() {
       </main>
 
       <footer className="pb-10 text-center font-hand text-base text-inksoft">
-        made with 💖 · your photos never leave this device
+        dibuat dengan 💖 · foto kamu tidak pernah keluar dari perangkat ini
       </footer>
     </div>
   );

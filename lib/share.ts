@@ -3,7 +3,7 @@ import type { ExportFormat } from "./types";
 
 export function dataUrlToBlob(dataUrl: string): Blob {
   const match = /^data:([^;,]+);base64,(.+)$/.exec(dataUrl);
-  if (!match) throw new Error("Unsupported data URL");
+  if (!match) throw new Error("Data gambar tidak valid");
   const mime = match[1];
   const binary = atob(match[2]);
   const bytes = new Uint8Array(binary.length);
